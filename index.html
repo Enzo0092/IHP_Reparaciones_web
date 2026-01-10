@@ -1,15 +1,144 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IHP Reparaciones</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>IHP Reparaciones | Servicio Técnico</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
 
-  <h1>IHP Reparaciones</h1>
-  <p>Soluciones informáticas y reparación de equipos</p>
+  <body>
+    <!-- ENCABEZADO -->
+    <header >
+      <section class="banner">
+        <h1>IHP Reparaciones</h1>
+        <p>Servicio técnico en electrónica e informática</p>
 
-</body>
+        <!-- Logo (lo agregás cuando quieras) -->
+        <img src="assets/img/logo.png" alt="Logo IHP Reparaciones" class="logo" />
+
+        <nav>
+          <ul>
+            <li><a href="#quienes">Quiénes Somos</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#testimonios">Experiencias</a></li>
+            <!-- Anchor listo para YouTube -->
+            <li><a href="#youtube">YouTube</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </nav>
+      </section>
+    </header>
+
+    <!-- QUIÉNES SOMOS -->
+    <section id="quienes" class="contenedor">
+      <h2>Quiénes Somos</h2>
+      <p>
+        En <strong>IHP Reparaciones</strong> nos especializamos en la reparación
+        de celulares, computadoras y equipos electrónicos. Trabajamos con
+        diagnóstico real, soluciones claras y atención personalizada.
+      </p>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="servicios" class="contenedor">
+      <h2>Servicios</h2>
+
+      <div class="grid-servicios">
+        <div class="card">
+          <h3>Reparación de Celulares</h3>
+          <p>
+            Cambio de pantallas, baterías, puertos de carga, software y
+            diagnóstico electrónico.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Computadoras y Notebooks</h3>
+          <p>
+            Instalación de sistemas, mantenimiento, limpieza interna,
+            optimización y upgrades.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Electrónica</h3>
+          <p>
+            Diagnóstico y reparación de placas electrónicas y componentes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section id="testimonios" class="contenedor">
+      <h2>Experiencias de clientes</h2>
+
+      <blockquote>
+        “Excelente atención y diagnóstico claro. El equipo quedó funcionando
+        perfecto.”
+      </blockquote>
+
+      <blockquote>
+        “Trabajo prolijo, precios razonables y mucha transparencia.”
+      </blockquote>
+    </section>
+
+    <!-- YOUTUBE (placeholder) -->
+    <section id="youtube" class="contenedor">
+      <h2>Contenido técnico</h2>
+      <p>
+        Próximamente voy a estar subiendo reparaciones reales y procesos técnicos
+        a mi canal de YouTube.
+      </p>
+      <!-- Acá después va el iframe -->
+    </section>
+
+    <!-- CONTACTO -->
+    <footer id="contacto">
+      <h2>Contacto</h2>
+
+      <ul>
+        <li>
+          <h2>
+            <a
+              href="https://www.instagram.com/ihp_reparaciones/"
+              target="_blank"
+            >
+              📷 Instagram
+            </a>
+          </h2>
+        </li>
+
+        <li>
+          <h2>
+            <a
+              href="https://www.whatsapp.com/catalog/5493795321712/?app_absent=0"
+              target="_blank"
+            >
+              📲 WhatsApp
+            </a>
+          </h2>
+        </li>
+      </ul>
+
+      <p>Escribime para consultas o presupuestos:</p>
+
+      <form
+        action="mailto:romeroenzofabian@gmail.com"
+        method="post"
+        enctype="text/plain"
+      >
+        <input type="text" name="nombre" placeholder="Tu nombre" required />
+        <input type="email" name="email" placeholder="Tu correo" required />
+        <textarea
+          name="mensaje"
+          placeholder="Escribí tu mensaje acá..."
+          rows="5"
+        ></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+
+      <p class="copy">© 2026 IHP Reparaciones</p>
+    </footer>
+  </body>
 </html>
