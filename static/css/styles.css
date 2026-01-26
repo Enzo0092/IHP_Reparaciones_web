@@ -17,6 +17,7 @@ body {
   background-color: var(--negro);
   color: var(--gris-texto);
   line-height: 1.6;
+
 }
 
 /* BANNER */
@@ -229,4 +230,165 @@ footer button:hover {
 }
 .card-link .card{
   height: 100%;
+}
+/* ===== MENU STICKY ===== */
+.menu-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 2000;
+  background: #1a1a1a;
+  border-bottom: 1px solid var(--dorado);
+}
+
+.menu-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* LOGO */
+.menu-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-logo img {
+  width: 36px;
+}
+
+.menu-logo span {
+  font-weight: bold;
+  color: var(--dorado);
+  font-size: 1rem;
+}
+
+/* NAV */
+.menu-nav {
+  display: flex;
+  gap: 22px;
+}
+
+.menu-nav a {
+  color: #eaeaea;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  position: relative;
+}
+
+/* Hover elegante */
+.menu-nav a::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--dorado);
+  transition: 0.3s;
+}
+
+.menu-nav a:hover::after {
+  width: 100%;
+}
+
+/* BOTON MOBILE */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--dorado);
+  color: var(--dorado);
+  font-size: 1.5rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .menu-nav {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background: #111;
+    border: 1px solid var(--dorado);
+    border-radius: 10px;
+    padding: 15px;
+    flex-direction: column;
+    gap: 15px;
+    display: none;
+  }
+
+  .menu-nav.active {
+    display: flex;
+  }
+}
+/* ===== BOTONES DE CONTACTO ===== */
+.contacto-botones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto 40px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .contacto-botones {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .contacto-botones {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-contacto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 10px;
+  border: 1px solid var(--dorado);
+  color: var(--dorado);
+  background: #111;
+  transition: 0.3s;
+}
+
+/* Hover general */
+.btn-contacto:hover {
+  background: var(--granate);
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* Opcional: colores sutiles por red */
+.instagram:hover {
+  background: #833ab4;
+}
+
+.whatsapp:hover {
+  background: #25d366;
+}
+
+.youtube:hover {
+  background: #ff0000;
+}
+
+.tiktok:hover {
+  background: #000;
 }
