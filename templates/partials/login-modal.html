@@ -1,0 +1,375 @@
+<!-- Modal de Login -->
+<div id="loginModal" class="modal" style="
+  display: none;
+  position: fixed;
+  z-index: 3000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+">
+
+  <div class="modal-content" style="
+    background: linear-gradient(145deg, #111, #1a1a1a);
+    margin: 8% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 450px;
+    border-radius: 16px;
+    border: 2px solid var(--dorado);
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2);
+    animation: slideUp 0.4s ease;
+    overflow: hidden;
+  ">
+
+    <!-- Header del Modal -->
+    <div class="modal-header" style="
+      background: var(--granate);
+      padding: 25px;
+      text-align: center;
+      border-bottom: 3px solid var(--dorado);
+    ">
+      <h2 style="
+        color: var(--dorado);
+        margin: 0;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      ">
+        <span>🔐</span> Acceso Administrativo
+      </h2>
+      <p style="color: #eaeaea; margin-top: 8px; font-size: 0.9rem;">
+        Panel de control IHP Reparaciones
+      </p>
+    </div>
+
+    <!-- Body del Modal -->
+    <div class="modal-body" style="padding: 30px;">
+      
+      <form id="loginForm" style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <div class="form-group">
+          <label style="
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dorado);
+            font-weight: bold;
+            font-size: 0.9rem;
+          ">
+            👤 Usuario
+          </label>
+          <input type="text" 
+                 id="username" 
+                 name="username" 
+                 placeholder="Ingresa tu usuario" 
+                 required 
+                 style="
+                   width: 100%;
+                   padding: 14px;
+                   background: #0a0a0a;
+                   border: 1px solid var(--dorado);
+                   border-radius: 8px;
+                   color: white;
+                   font-size: 1rem;
+                   transition: 0.3s;
+                 "
+                 onfocus="this.style.borderColor='var(--granate)'; this.style.boxShadow='0 0 0 2px rgba(128, 0, 32, 0.3)'"
+                 onblur="this.style.borderColor='var(--dorado)'; this.style.boxShadow='none'">
+        </div>
+
+        <div class="form-group">
+          <label style="
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dorado);
+            font-weight: bold;
+            font-size: 0.9rem;
+          ">
+            🔒 Contraseña
+          </label>
+          <input type="password" 
+                 id="password" 
+                 name="password" 
+                 placeholder="Ingresa tu contraseña" 
+                 required 
+                 style="
+                   width: 100%;
+                   padding: 14px;
+                   background: #0a0a0a;
+                   border: 1px solid var(--dorado);
+                   border-radius: 8px;
+                   color: white;
+                   font-size: 1rem;
+                   transition: 0.3s;
+                 "
+                 onfocus="this.style.borderColor='var(--granate)'; this.style.boxShadow='0 0 0 2px rgba(128, 0, 32, 0.3)'"
+                 onblur="this.style.borderColor='var(--dorado)'; this.style.boxShadow='none'">
+        </div>
+
+        <div class="form-options" style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.85rem;
+        ">
+          <label style="color: #aaa; display: flex; align-items: center; gap: 5px;">
+            <input type="checkbox" name="remember" style="accent-color: var(--dorado);">
+            Recordarme
+          </label>
+          <a href="#" style="color: var(--dorado); text-decoration: none; transition: 0.3s;"
+             onmouseover="this.style.color='#ff6b6b'"
+             onmouseout="this.style.color='var(--dorado)'">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+
+        <div id="loginError" style="
+          display: none;
+          background: rgba(128, 0, 32, 0.2);
+          border: 1px solid var(--granate);
+          color: #ff6b6b;
+          padding: 12px;
+          border-radius: 8px;
+          text-align: center;
+          font-size: 0.9rem;
+        ">
+          ❌ Usuario o contraseña incorrectos
+        </div>
+
+        <button type="submit" style="
+          background: linear-gradient(135deg, var(--dorado), #b89423);
+          color: black;
+          border: none;
+          padding: 16px;
+          border-radius: 10px;
+          font-weight: bold;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: 0.3s;
+          margin-top: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+        "
+        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(212, 175, 55, 0.4)'"
+        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+          <span>🚀</span> Iniciar Sesión
+        </button>
+
+      </form>
+
+      <div style="
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+        text-align: center;
+        color: #888;
+        font-size: 0.85rem;
+      ">
+        <p>Credenciales de prueba: <strong>admin / admin</strong></p>
+      </div>
+
+    </div>
+
+    <!-- Footer del Modal -->
+    <div class="modal-footer" style="
+      background: #0a0a0a;
+      padding: 15px;
+      text-align: center;
+      border-top: 1px solid #333;
+      color: #666;
+      font-size: 0.8rem;
+    ">
+      <p>© 2026 IHP Reparaciones - Sistema Administrativo v1.0</p>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Estilos para animaciones -->
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Close button for modal */
+  .close-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    color: var(--dorado);
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 3001;
+    background: rgba(0, 0, 0, 0.5);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+  }
+
+  .close-modal:hover {
+    background: var(--granate);
+    transform: rotate(90deg);
+  }
+</style>
+
+<!-- Script para el modal -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('loginModal');
+    const openBtn = document.getElementById('open-login-modal');
+    const closeBtn = document.getElementById('close-modal') || createCloseButton();
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    
+    // Crear botón de cerrar si no existe
+    function createCloseButton() {
+      const closeBtn = document.createElement('span');
+      closeBtn.innerHTML = '&times;';
+      closeBtn.className = 'close-modal';
+      closeBtn.id = 'close-modal';
+      closeBtn.onclick = closeModal;
+      modal.appendChild(closeBtn);
+      return closeBtn;
+    }
+    
+    // Abrir modal
+    if (openBtn) {
+      openBtn.onclick = function() {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Evitar scroll
+      };
+    }
+    
+    // Cerrar modal
+    function closeModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto'; // Restaurar scroll
+      loginForm.reset();
+      loginError.style.display = 'none';
+    }
+    
+    // Cerrar al hacer click fuera del modal
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+    
+    // Manejar envío del formulario
+    if (loginForm) {
+      loginForm.onsubmit = function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        // Credenciales estáticas
+        if (username === 'admin' && password === 'admin') {
+          // Ocultar modal
+          closeModal();
+          
+          // Mostrar panel de administrador
+          const adminPanel = document.getElementById('adminPanel');
+          if (adminPanel) {
+            adminPanel.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Guardar estado de login
+            sessionStorage.setItem('adminLoggedIn', 'true');
+          }
+          
+          // Mostrar mensaje de éxito
+          showNotification('✅ Sesión iniciada correctamente', 'success');
+        } else {
+          // Mostrar error
+          loginError.style.display = 'block';
+          
+          // Agitar el formulario
+          loginForm.style.animation = 'shake 0.5s';
+          setTimeout(() => {
+            loginForm.style.animation = '';
+          }, 500);
+        }
+      };
+    }
+    
+    // Verificar si ya hay sesión activa
+    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+      const adminPanel = document.getElementById('adminPanel');
+      if (adminPanel) {
+        adminPanel.style.display = 'block';
+      }
+    }
+    
+    // Función para mostrar notificaciones
+    function showNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'var(--granate)' : '#ff6b6b'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        border-left: 5px solid var(--dorado);
+        z-index: 4000;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        animation: slideInRight 0.3s ease;
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+    
+    // Agregar animación de shake
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+      
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  });
+</script>

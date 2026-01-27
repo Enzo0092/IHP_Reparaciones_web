@@ -1,0 +1,31 @@
+.DS_Store
+Thumbs.db
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Entornos virtuales
+venv/
+env/
+
+# Configuración IDE
+.vscode/
+.idea/
+
+# Archivos temporales
+*.log
+*.tmp
+*.bak
+
+# Windows
+Thumbs.db
+Desktop.ini
