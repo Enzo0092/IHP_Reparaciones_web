@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, redirect, url_for, session, request, jsonify
 
 app = Flask(__name__)
@@ -12,6 +13,11 @@ USERS_DB = {
     'carlos': {'password': 'cliente123', 'role': 0, 'name': 'Carlos López'},
     'ana': {'password': 'cliente456', 'role': 0, 'name': 'Ana Martínez'}
 }
+=======
+from flask import Flask, render_template
+
+app = Flask(__name__)
+>>>>>>> 448f246873e0e34ef7ca0eaef998dca84746c9bd
 
 @app.route("/")
 def home():
@@ -28,6 +34,7 @@ def consolas():
 @app.route("/pcs")
 def pcs():
     return render_template("pcs.html")
+<<<<<<< HEAD
 
 # Ruta para manejar el login por AJAX
 @app.route('/login', methods=['POST'])
@@ -115,3 +122,9 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
+=======
+    
+
+if __name__ == "__main__":
+    app.run(debug=True)
+>>>>>>> 448f246873e0e34ef7ca0eaef998dca84746c9bd
