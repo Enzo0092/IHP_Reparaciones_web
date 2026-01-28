@@ -28,8 +28,7 @@
         <a href="{{ url_for('celulares') }}">Celulares</a>
         <a href="{{ url_for('pcs') }}">PCs</a>
         <a href="{{ url_for('consolas') }}">Consolas</a>
-<<<<<<< HEAD
-        
+
         {% if session.get('user_logged_in') %}
           {% set role = session.get('user_role') %}
           {% if role == 1 %}
@@ -46,9 +45,7 @@
             </a>
           {% endif %}
         {% endif %}
-        
-=======
->>>>>>> 448f246873e0e34ef7ca0eaef998dca84746c9bd
+
         <a href="https://www.adrinavarrodev.com" target="_blank" rel="noopener">
           Desarrollo de Software
         </a>
@@ -60,65 +57,4 @@
 
   <!-- BANNER -->
   <section class="banner">
-    <div class="banner-content">
-      <img
-        src="{{ url_for('static', filename='assets/img/logo.png') }}"
-        class="logo"
-        alt="IHP Reparaciones"
-      >
-
-      <h1>IHP Reparaciones</h1>
-      <p>
-        Servicio técnico en Electrónica e Informática <br>
-        <strong>
-          Soluciones Digitales, Desarrollo de Software y Marketing
-        </strong>
-      </p>
-    </div>
-  </section>
-
-  <!-- CONTENIDO DINÁMICO -->
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-
-  <!-- FOOTER -->
-  <footer id="contacto">
-    <div class="contacto-botones">
-
-      <a href="https://www.instagram.com/ihp_reparaciones/" target="_blank" class="btn-contacto instagram">
-        📷 Instagram
-      </a>
-
-      <a href="https://wa.me/5493795321712" target="_blank" class="btn-contacto whatsapp">
-        📲 WhatsApp
-      </a>
-
-      <a href="https://www.youtube.com/" target="_blank" class="btn-contacto youtube">
-        ▶️ YouTube
-      </a>
-
-      <a href="https://www.tiktok.com/" target="_blank" class="btn-contacto tiktok">
-        🎵 TikTok
-      </a>
-
-    </div>
-
-    <!-- FORMULARIO (luego se conecta con fetch) -->
-    <form>
-      <input type="text" name="nombre" placeholder="Tu nombre" required>
-      <input type="email" name="email" placeholder="Tu correo" required>
-      <textarea name="mensaje" placeholder="Escribí tu mensaje..." rows="5"></textarea>
-      <button type="submit">Enviar</button>
-    </form>
-
-    <p class="copy">© 2026 IHP Reparaciones</p>
-  </footer>
-
-  <script src="{{ url_for('static', filename='js/Menu.js') }}"></script>
-</body>
-<<<<<<< HEAD
-</html>
-=======
-</html>
->>>>>>> 448f246873e0e34ef7ca0eaef998dca84746c9bd
+    <
