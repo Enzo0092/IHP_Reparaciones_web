@@ -28,6 +28,24 @@
         <a href="{{ url_for('celulares') }}">Celulares</a>
         <a href="{{ url_for('pcs') }}">PCs</a>
         <a href="{{ url_for('consolas') }}">Consolas</a>
+        
+        {% if session.get('user_logged_in') %}
+          {% set role = session.get('user_role') %}
+          {% if role == 1 %}
+            <a href="{{ url_for('admin_panel') }}" class="admin-link">
+              👑 Panel Admin
+            </a>
+          {% elif role == 2 %}
+            <a href="{{ url_for('tecnico_panel') }}" class="tecnico-link">
+              🔧 Panel Técnico
+            </a>
+          {% elif role == 0 %}
+            <a href="{{ url_for('cliente_panel') }}" class="cliente-link">
+              👤 Mi Panel
+            </a>
+          {% endif %}
+        {% endif %}
+        
         <a href="https://www.adrinavarrodev.com" target="_blank" rel="noopener">
           Desarrollo de Software
         </a>
@@ -95,6 +113,5 @@
   </footer>
 
   <script src="{{ url_for('static', filename='js/Menu.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
 </html>

@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}Panel de Administración | IHP Reparaciones{% endblock %}
+
+{% block content %}
+<!-- Panel de Administrador -->
+<div id="adminPanel">
+  <!-- Header del Panel -->
+  <div class="admin-header">
+    <div>
+      <h2><span>👑</span> Panel de Administración</h2>
+      <p>Bienvenido, Administrador</p>
+    </div>
+    
+    <a href="{{ url_for('logout') }}" id="logoutBtn" class="logout-btn">
+      <span>🚪</span> Cerrar Sesión
+    </a>
+  </div>
+
+  <!-- Stats Dashboard -->
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <div class="icon">📱</div>
+      <h3>Celulares</h3>
+      <p>Reparaciones activas</p>
+      <div class="number">12</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="icon">💻</div>
+      <h3>Computadoras</h3>
+      <p>En proceso</p>
+      <div class="number">8</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="icon">🎮</div>
+      <h3>Consolas</h3>
+      <p>Pendientes</p>
+      <div class="number">5</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="icon">💰</div>
+      <h3>Ingresos</h3>
+      <p>Este mes</p>
+      <div class="number">$25,400</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h3>🚀 Acciones Rápidas</h3>
+    
+    <div class="quick-actions-grid">
+      <button class="action-btn">
+        <span>➕</span> Nuevo Servicio
+      </button>
+      
+      <button class="action-btn">
+        <span>👥</span> Gestionar Clientes
+      </button>
+      
+      <button class="action-btn">
+        <span>📊</span> Ver Reportes
+      </button>
+      
+      <button class="action-btn">
+        <span>⚙️</span> Configuración
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent Orders Table -->
+  <div class="recent-orders">
+    <h3>📋 Reparaciones Recientes</h3>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Dispositivo</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#001</td>
+            <td>Juan Pérez</td>
+            <td>iPhone 14 Pro</td>
+            <td><span class="status-completed">Completado</span></td>
+            <td>15/03/2026</td>
+            <td>
+              <button class="table-btn view">Ver</button>
+              <button class="table-btn edit">Editar</button>
+            </td>
+          </tr>
+          <tr>
+            <td>#002</td>
+            <td>María González</td>
+            <td>MacBook Pro 2023</td>
+            <td><span class="status-pending">En Proceso</span></td>
+            <td>16/03/2026</td>
+            <td>
+              <button class="table-btn view">Ver</button>
+              <button class="table-btn edit">Editar</button>
+            </td>
+          </tr>
+          <tr>
+            <td>#003</td>
+            <td>Carlos López</td>
+            <td>PlayStation 5</td>
+            <td><span class="status-waiting">Pendiente</span></td>
+            <td>17/03/2026</td>
+            <td>
+              <button class="table-btn view">Ver</button>
+              <button class="table-btn edit">Editar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- System Info -->
+  <div class="system-info">
+    <h3><span>🖥️</span> Información del Sistema</h3>
+    
+    <div class="system-info-grid">
+      <div><strong>Usuarios activos:</strong> 1</div>
+      <div><strong>Último acceso:</strong> Hoy, 14:30</div>
+      <div><strong>Versión:</strong> 1.0.0</div>
+      <div><strong>Estado:</strong> <span class="system-status">● Online</span></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

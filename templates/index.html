@@ -16,16 +16,7 @@
     
     <!-- Botón para abrir modal de login -->
     <div style="margin-top: 30px;">
-      <button id="open-login-modal" class="btn-login" style="
-        background: var(--dorado);
-        color: black;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-      ">
+      <button id="open-login-modal" class="btn-login">
         🔐 Iniciar Sesión (Admin)
       </button>
     </div>
@@ -36,7 +27,6 @@
     <h2>Servicios</h2>
 
     <div class="grid-servicios">
-
       <a href="{{ url_for('celulares') }}" class="card-link">
         <div class="card">
           <h3>Reparación de Celulares</h3>
@@ -47,7 +37,7 @@
         </div>
       </a>
 
-      <a href="pcs.html" class="card-link">
+      <a href="{{ url_for('pcs') }}" class="card-link">
         <div class="card">
           <h3>Computadoras y Notebooks</h3>
           <p>
@@ -57,7 +47,7 @@
         </div>
       </a>
       
-      <a href="consolas.html" class="card-link">
+      <a href="{{ url_for('consolas') }}" class="card-link">
         <div class="card">
           <h3>Consolas de videojuegos</h3>
           <p>
@@ -66,7 +56,6 @@
           </p>
         </div>
       </a>
-
     </div>
   </section>
 
@@ -93,11 +82,8 @@
     </p>
   </section>
 
-  <!-- MODAL DE LOGIN (se incluye aquí para que esté disponible en todas las páginas) -->
+  <!-- MODAL DE LOGIN -->
   {% include 'partials/login-modal.html' %}
-
-  <!-- PANEL DE ADMIN (oculto inicialmente) -->
-  {% include 'partials/admin-panel.html' %}
 
 </body>
 {% endblock %}

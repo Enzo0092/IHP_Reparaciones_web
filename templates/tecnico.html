@@ -1,0 +1,186 @@
+{% extends "layout.html" %}
+
+{% block title %}Panel de Técnico | IHP Reparaciones{% endblock %}
+
+{% block content %}
+<!-- Panel de Técnico -->
+<div id="tecnicoPanel">
+  <!-- Header del Panel -->
+  <div class="tecnico-header">
+    <div>
+      <h2><span>🔧</span> Panel de Técnico</h2>
+      <p>Bienvenido, {{ session.get('user_name', 'Técnico') }}</p>
+      <p class="user-role">🛠️ Rol: Técnico de Reparaciones</p>
+    </div>
+    
+    <div class="header-actions">
+      <div class="tecnico-status">
+        <span class="status-indicator active"></span>
+        <span>Disponible</span>
+      </div>
+      <a href="{{ url_for('logout') }}" id="logoutBtn" class="logout-btn">
+        <span>🚪</span> Cerrar Sesión
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Dashboard del Técnico -->
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <div class="icon">⏳</div>
+      <h3>En Proceso</h3>
+      <p>Reparaciones activas</p>
+      <div class="number">5</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="icon">✅</div>
+      <h3>Completadas Hoy</h3>
+      <p>Terminadas</p>
+      <div class="number">3</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="icon">📅</div>
+      <h3>Pendientes</h3>
+      <p>Por asignar</p>
+      <div class="number">8</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="icon">⭐</div>
+      <h3>Eficiencia</h3>
+      <p>Este mes</p>
+      <div class="number">92%</div>
+    </div>
+  </div>
+
+  <!-- Mis Reparaciones -->
+  <div class="my-repairs">
+    <div class="section-header">
+      <h3>🛠️ Mis Reparaciones Activas</h3>
+      <button class="btn-refresh">🔄 Actualizar</button>
+    </div>
+    
+    <div class="repairs-list">
+      <div class="repair-card urgent">
+        <div class="repair-info">
+          <h4>#R-015</h4>
+          <p><strong>Cliente:</strong> Ana Martínez</p>
+          <p><strong>Dispositivo:</strong> iPhone 13 - Pantalla rota</p>
+          <p><strong>Prioridad:</strong> <span class="priority-high">Alta</span></p>
+        </div>
+        <div class="repair-status">
+          <span class="status-badge in-progress">En Proceso</span>
+          <p class="repair-time">⏰ 2 horas</p>
+          <button class="btn-action complete">Marcar como Terminado</button>
+        </div>
+      </div>
+      
+      <div class="repair-card">
+        <div class="repair-info">
+          <h4>#R-014</h4>
+          <p><strong>Cliente:</strong> Carlos López</p>
+          <p><strong>Dispositivo:</strong> PlayStation 5 - Overheating</p>
+          <p><strong>Prioridad:</strong> <span class="priority-medium">Media</span></p>
+        </div>
+        <div class="repair-status">
+          <span class="status-badge diagnosing">Diagnosticando</span>
+          <p class="repair-time">⏰ 4 horas</p>
+          <button class="btn-action start">Comenzar Reparación</button>
+        </div>
+      </div>
+      
+      <div class="repair-card">
+        <div class="repair-info">
+          <h4>#R-013</h4>
+          <p><strong>Cliente:</strong> Roberto Sánchez</p>
+          <p><strong>Dispositivo:</strong> MacBook Air - Batería</p>
+          <p><strong>Prioridad:</strong> <span class="priority-low">Baja</span></p>
+        </div>
+        <div class="repair-status">
+          <span class="status-badge waiting">Esperando Repuestos</span>
+          <p class="repair-time">⏰ 1 día</p>
+          <button class="btn-action" disabled>En Espera</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Herramientas y Recursos -->
+  <div class="tecnico-tools">
+    <h3>🧰 Herramientas y Recursos</h3>
+    
+    <div class="tools-grid">
+      <div class="tool-card">
+        <div class="tool-icon">📋</div>
+        <h4>Checklist Reparación</h4>
+        <p>Lista de verificación paso a paso</p>
+        <button class="tool-btn">Abrir</button>
+      </div>
+      
+      <div class="tool-card">
+        <div class="tool-icon">🔍</div>
+        <h4>Diagnóstico Rápido</h4>
+        <p>Herramientas de diagnóstico</p>
+        <button class="tool-btn">Usar</button>
+      </div>
+      
+      <div class="tool-card">
+        <div class="tool-icon">📞</div>
+        <h4>Contactar Cliente</h4>
+        <p>Comunicación directa</p>
+        <button class="tool-btn">Llamar</button>
+      </div>
+      
+      <div class="tool-card">
+        <div class="tool-icon">📊</div>
+        <h4>Mi Rendimiento</h4>
+        <p>Estadísticas personales</p>
+        <button class="tool-btn">Ver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventario de Repuestos -->
+  <div class="inventory">
+    <h3>📦 Inventario de Repuestos</h3>
+    
+    <div class="inventory-grid">
+      <div class="inventory-item low">
+        <h4>Pantallas iPhone</h4>
+        <p class="stock">Stock: <span>2</span></p>
+        <p class="alert">⚠️ Bajo stock</p>
+      </div>
+      
+      <div class="inventory-item">
+        <h4>Baterías Samsung</h4>
+        <p class="stock">Stock: <span>15</span></p>
+        <p class="status">✅ Disponible</p>
+      </div>
+      
+      <div class="inventory-item">
+        <h4>Puertos de Carga</h4>
+        <p class="stock">Stock: <span>8</span></p>
+        <p class="status">✅ Disponible</p>
+      </div>
+      
+      <div class="inventory-item critical">
+        <h4>Pasta Térmica</h4>
+        <p class="stock">Stock: <span>0</span></p>
+        <p class="alert">🚫 Agotado</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notas y Comentarios -->
+  <div class="tecnico-notes">
+    <h3>📝 Notas del Día</h3>
+    <div class="notes-container">
+      <textarea placeholder="Escribe aquí tus notas, observaciones o recordatorios..." rows="4"></textarea>
+      <button class="btn-save">💾 Guardar Notas</button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
