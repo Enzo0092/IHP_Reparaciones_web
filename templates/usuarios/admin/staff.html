@@ -1,0 +1,249 @@
+{% extends "layout.html" %}
+
+{% block title %}Gestión de Staff | IHP Admin{% endblock %}
+
+{% block content %}
+<div id="adminPanel" class="staff-panel">
+  
+  <div class="admin-header">
+    <div>
+      <h2><span>👥</span> Gestión de Staff</h2>
+      <p>Monitoreo de productividad, asistencia y asignación de tareas.</p>
+    </div>
+    <div class="header-actions">
+      <button onclick="openModal('modalNuevoUsuario')" class="action-btn-small">
+        <span>➕</span> Nuevo Usuario
+      </button>
+      <a href="{{ url_for('admin_panel') }}" class="back-btn">
+        <span>⬅️</span> Volver
+      </a>
+    </div>
+  </div>
+
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <div class="icon">👨‍🔧</div>
+      <h3>Técnicos Activos</h3>
+      <div class="number text-success">3 / 4</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">⚡</div>
+      <h3>Productividad Hoy</h3>
+      <p>Reparaciones completadas</p>
+      <div class="number">12</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">⏳</div>
+      <h3>Pendientes</h3>
+      <p>Sin asignar</p>
+      <div class="number text-warning">5</div>
+    </div>
+  </div>
+
+  <div class="staff-grid">
+    
+    <div class="tech-column">
+      <h3>Equipo Técnico</h3>
+      
+      <div class="tech-card busy">
+        <div class="tech-header">
+          <div class="tech-info">
+            <div class="avatar">JP</div>
+            <div>
+              <h4>Juan Pérez</h4>
+              <span class="status-badge busy">● Ocupado</span>
+            </div>
+          </div>
+          <div class="tech-actions">
+            <button class="icon-btn" title="Ver Historial">📜</button>
+            <button class="icon-btn" title="Editar Perfil">✏️</button>
+          </div>
+        </div>
+        
+        <div class="tech-body">
+          <p class="current-task"><strong>Tarea Actual:</strong> Cambio Pantalla iPhone 13 (#R-1024)</p>
+          
+          <div class="productivity-section">
+            <div class="prod-header">
+              <span>Eficiencia Semanal</span>
+              <span>85%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 85%;"></div>
+            </div>
+          </div>
+
+          <div class="attendance-info">
+            <small>🕒 Entrada: 08:00 AM</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-card available">
+        <div class="tech-header">
+          <div class="tech-info">
+            <div class="avatar">MG</div>
+            <div>
+              <h4>María González</h4>
+              <span class="status-badge available">● Disponible</span>
+            </div>
+          </div>
+          <div class="tech-actions">
+            <button class="icon-btn">📜</button>
+            <button class="icon-btn">✏️</button>
+          </div>
+        </div>
+        
+        <div class="tech-body">
+          <p class="current-task text-muted"><em>Esperando asignación...</em></p>
+          
+          <div class="productivity-section">
+            <div class="prod-header">
+              <span>Eficiencia Semanal</span>
+              <span>92%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 92%;"></div>
+            </div>
+          </div>
+
+           <div class="attendance-info">
+            <small>🕒 Entrada: 08:15 AM</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="management-column">
+      
+      <div class="assignment-panel">
+        <h3>📋 Tareas Pendientes (Sin Asignar)</h3>
+        <div class="task-list">
+          
+          <div class="task-item">
+            <div class="task-details">
+              <strong>#R-1029 - PS5 (HDMI)</strong>
+              <span class="priority-high">Urgente</span>
+            </div>
+            <button onclick="openModal('modalAsignar')" class="assign-btn">Asignar ➡️</button>
+          </div>
+
+          <div class="task-item">
+            <div class="task-details">
+              <strong>#R-1030 - Samsung A52 (Batería)</strong>
+              <span class="priority-normal">Normal</span>
+            </div>
+            <button onclick="openModal('modalAsignar')" class="assign-btn">Asignar ➡️</button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="attendance-panel">
+        <h3>🕒 Registro de Hoy</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Entrada</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Juan Pérez</td>
+              <td>08:00</td>
+              <td class="text-success">Puntual</td>
+            </tr>
+            <tr>
+              <td>María G.</td>
+              <td>08:15</td>
+              <td class="text-warning">Tarde (15m)</td>
+            </tr>
+            <tr>
+              <td>Carlos L.</td>
+              <td>--:--</td>
+              <td class="text-danger">Ausente</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div id="modalNuevoUsuario" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalNuevoUsuario')">&times;</span>
+    <div class="modal-header">
+      <h2>👤 Crear Nuevo Usuario</h2>
+    </div>
+    <div class="modal-body">
+      <form action="#" method="POST" class="staff-form">
+        <div class="form-group">
+          <label>Nombre Completo</label>
+          <input type="text" name="nombre" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Usuario (Login)</label>
+            <input type="text" name="username" required>
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" name="password" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Rol / Permisos</label>
+          <select name="rol">
+            <option value="2">Técnico (Reparaciones)</option>
+            <option value="1">Administrador (Acceso Total)</option>
+            <option value="3">Recepción (Solo Ingreso/Entrega)</option>
+          </select>
+        </div>
+        <button type="submit" class="login-btn" style="width:100%">Crear Usuario</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modalAsignar" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalAsignar')">&times;</span>
+    <div class="modal-header">
+      <h2>🔧 Asignar Reparación</h2>
+    </div>
+    <div class="modal-body">
+      <p style="color:#aaa; margin-bottom:15px;">Asignando: <strong>#R-1029 - PS5 (HDMI)</strong></p>
+      <form action="#" method="POST">
+        <div class="form-group">
+          <label>Seleccionar Técnico</label>
+          <select class="tech-select">
+            <option value="2">María González (Disponible)</option>
+            <option value="1" disabled>Juan Pérez (Ocupado)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioridad</label>
+          <select>
+            <option value="alta">Alta - Urgente</option>
+            <option value="media" selected>Media - Normal</option>
+            <option value="baja">Baja</option>
+          </select>
+        </div>
+        <button type="submit" class="login-btn" style="width:100%">Confirmar Asignación</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(modalId) { document.getElementById(modalId).style.display = "flex"; }
+  function closeModal(modalId) { document.getElementById(modalId).style.display = "none"; }
+  window.onclick = function(event) { if (event.target.classList.contains('modal')) { event.target.style.display = "none"; } }
+</script>
+{% endblock %}

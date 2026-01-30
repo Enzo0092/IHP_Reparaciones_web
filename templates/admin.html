@@ -11,7 +11,7 @@
       <h2><span>👑</span> Panel de Administración</h2>
       <p>Bienvenido, Administrador</p>
     </div>
-    
+
     <a href="{{ url_for('logout') }}" id="logoutBtn" class="logout-btn">
       <span>🚪</span> Cerrar Sesión
     </a>
@@ -25,21 +25,21 @@
       <p>Reparaciones activas</p>
       <div class="number">12</div>
     </div>
-    
+
     <div class="stat-card">
       <div class="icon">💻</div>
       <h3>Computadoras</h3>
       <p>En proceso</p>
       <div class="number">8</div>
     </div>
-    
+
     <div class="stat-card">
       <div class="icon">🎮</div>
       <h3>Consolas</h3>
       <p>Pendientes</p>
       <div class="number">5</div>
     </div>
-    
+
     <div class="stat-card">
       <div class="icon">💰</div>
       <h3>Ingresos</h3>
@@ -50,31 +50,62 @@
 
   <!-- Quick Actions -->
   <div class="quick-actions">
-    <h3>🚀 Acciones Rápidas</h3>
-    
+    <h3>🚀 Gestión Integral del Negocio</h3>
+
     <div class="quick-actions-grid">
-      <button class="action-btn">
-        <span>➕</span> Nuevo Servicio
+      <button class="action-btn inventory-btn" onclick="window.location.href='{{ url_for('admin_inventario') }}'">
+        <span>📦</span>
+        <div>
+          <strong>Inventario</strong>
+          <small>Stock y Alertas</small>
+        </div>
       </button>
-      
-      <button class="action-btn">
-        <span>👥</span> Gestionar Clientes
+
+      <button class="action-btn staff-btn" onclick="window.location.href='{{ url_for('admin_staff') }}'">
+        <span>👥</span>
+        <div>
+          <strong>Staff Técnico</strong>
+          <small>Productividad y Roles</small>
+        </div>
       </button>
-      
-      <button class="action-btn">
-        <span>📊</span> Ver Reportes
+
+      <button class="action-btn staff-btn" onclick="window.location.href='{{ url_for('admin_reportes') }}'"
+        <span>📊</span>
+        <div>
+          <strong>Reportes</strong>
+          <small>Ingresos y Egresos</small>
+        </div>
       </button>
-      
-      <button class="action-btn">
-        <span>⚙️</span> Configuración
+
+      <button class="action-btn crm-btn" onclick="window.location.href='{{ url_for('admin_crm') }}'">
+        <span>🤝</span>
+        <div>
+          <strong>CRM Clientes</strong>
+          <small>Historial y Lealtad</small>
+        </div>
       </button>
+
+      <button class="action-btn settings-btn" onclick="window.location.href='{{ url_for('admin_servicios') }}'">
+        <span>⚙️</span>
+        <div>
+          <strong>Servicios</strong>
+          <small>Precios y Tiempos</small>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <div class="system-alerts" style="margin-top: 20px;">
+    <div class="stat-card" style="border-color: #ff6b6b; background: rgba(255, 107, 107, 0.05);">
+      <h4 style="color: #ff6b6b;">⚠️ Alertas de Stock</h4>
+      <p style="font-size: 0.9rem;">Hay 3 repuestos por debajo del mínimo.</p>
     </div>
   </div>
 
   <!-- Recent Orders Table -->
   <div class="recent-orders">
     <h3>📋 Reparaciones Recientes</h3>
-    
+
     <div class="table-container">
       <table>
         <thead>
@@ -129,7 +160,7 @@
   <!-- System Info -->
   <div class="system-info">
     <h3><span>🖥️</span> Información del Sistema</h3>
-    
+
     <div class="system-info-grid">
       <div><strong>Usuarios activos:</strong> 1</div>
       <div><strong>Último acceso:</strong> Hoy, 14:30</div>

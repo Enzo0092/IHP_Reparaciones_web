@@ -1,0 +1,436 @@
+{% extends "layout.html" %}
+
+{% block title %}CRM Clientes | IHP Admin{% endblock %}
+
+{% block content %}
+<div id="adminPanel" class="crm-panel">
+
+    <div class="admin-header">
+        <div>
+            <h2><span>🤝</span> CRM & Clientes</h2>
+            <p>Gestión de relaciones, dispositivos y reparaciones.</p>
+        </div>
+        <a href="{{ url_for('admin_panel') }}" class="back-btn">
+            <span>⬅️</span> Volver
+        </a>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="icon">👥</div>
+            <h3>Total Clientes</h3>
+            <div class="number">145</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">📱</div>
+            <h3>Dispositivos Reg.</h3>
+            <p>En base de datos</p>
+            <div class="number text-gold">320</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">🔧</div>
+            <h3>Reparaciones</h3>
+            <p>Histórico total</p>
+            <div class="number">512</div>
+        </div>
+    </div>
+
+    <div class="crm-grid">
+
+        <div class="client-list-section">
+            <div class="section-header">
+                <h3>📂 Directorio de Clientes</h3>
+                <button onclick="openModal('modalNewClient')" class="action-btn-small" style="margin-left: auto; margin-right: 15px;">
+                    <span>➕</span> Nuevo Cliente
+                </button>
+            </div>
+            
+            <div class="search-box" style="margin-bottom: 15px;">
+                <input type="text" id="clientSearch" onkeyup="filterClients()"
+                    placeholder="Buscar por nombre, DNI o dispositivo...">
+            </div>
+
+            <div class="table-container client-table-container">
+                <table id="clientTable">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Contacto</th>
+                            <th>Dispositivos</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Carlos López</strong><br>
+                                <small>DNI: 12.345.678</small>
+                                <span class="badge-vip" style="font-size:0.7rem; margin-left:5px;">VIP</span>
+                            </td>
+                            <td>carlos@email.com</td>
+                            <td>iPhone 14, PS5</td> <td>
+                                <button onclick="openClientInfo('Carlos López', 'VIP')" class="action-btn-small">Ver Ficha</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Ana Martínez</strong><br>
+                                <small>DNI: 98.765.432</small>
+                            </td>
+                            <td>ana@email.com</td>
+                            <td>Samsung S23</td>
+                            <td>
+                                <button onclick="openClientInfo('Ana Martínez', 'Regular')" class="action-btn-small">Ver Ficha</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Pedro Sanchez</strong><br>
+                                <small>DNI: 45.678.901</small>
+                            </td>
+                            <td>pedro@email.com</td>
+                            <td>(Sin dispositivos)</td>
+                            <td>
+                                <button onclick="openClientInfo('Pedro Sanchez', 'Nuevo')" class="action-btn-small">Ver Ficha</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="marketing-section">
+            <div class="marketing-card" style="position:static; margin-bottom: 20px;">
+                <h3>⚡ Acciones Frecuentes</h3>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="action-btn-small secondary" onclick="alert('Selecciona un cliente de la lista primero')">🔧 Registrar Ingreso (Reparación)</button>
+                    <button class="action-btn-small secondary" onclick="alert('Selecciona un cliente de la lista primero')">📱 Asociar Nuevo Equipo</button>
+                </div>
+            </div>
+
+            <div class="marketing-card">
+                <h3>🚀 Marketing</h3>
+                <form action="{{ url_for('admin_crm') }}" method="POST">
+                    <input type="hidden" name="action_type" value="marketing">
+                    <div class="form-group">
+                        <label>Título Campaña</label>
+                        <input type="text" name="campaign_title" placeholder="Oferta..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mensaje</label>
+                        <textarea name="message" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="action-btn-small" style="width:100%;">📨 Enviar</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="modalClientInfo" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('modalClientInfo')">&times;</span>
+        
+        <div class="modal-header">
+            <h2 id="modalClientName">Cliente</h2>
+            <span id="modalClientBadge" class="badge-vip" style="margin-top:5px; display:inline-block;">VIP</span>
+        </div>
+        
+        <div class="modal-body">
+            
+            <div class="client-tabs">
+                <button class="tab-btn active" onclick="openTab(event, 'tabHistorial')">Historial</button>
+                <button class="tab-btn" onclick="openTab(event, 'tabDispositivos')">Dispositivos</button>
+                <button class="tab-btn" onclick="openTab(event, 'tabDatos')">Datos Personales</button>
+            </div>
+
+            <div id="tabHistorial" class="tab-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h4>Reparaciones Realizadas</h4>
+                    <button onclick="openModal('modalNewRepair')" class="action-btn-small">🔧 Nueva Reparación</button>
+                </div>
+
+                <div class="history-list">
+                    <ul style="list-style:none; padding:0; color:#ccc;">
+                        <li style="border-bottom:1px solid #333; padding:10px 0; display:flex; justify-content:space-between;">
+                            <div>
+                                <strong>15/03/2026</strong> - iPhone 14 Pro<br>
+                                <small>Cambio de Módulo</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="text-success">$120,000</span><br>
+                                <span class="status-ok">Entregado</span>
+                            </div>
+                        </li>
+                         <li style="border-bottom:1px solid #333; padding:10px 0; display:flex; justify-content:space-between;">
+                            <div>
+                                <strong>10/12/2025</strong> - PS5<br>
+                                <small>Mantenimiento Térmico</small>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="text-success">$45,000</span><br>
+                                <span class="status-ok">Entregado</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="tabDispositivos" class="tab-content" style="display: none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h4>Equipos Registrados</h4>
+                    <button onclick="openModal('modalNewDevice')" class="action-btn-small">📱 Agregar Equipo</button>
+                </div>
+
+                <div class="devices-list" style="display:flex; flex-direction:column; gap:10px;">
+                    <div class="inventory-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#1a1a1a;">
+                        <div>
+                            <strong style="color:var(--dorado)">iPhone 14 Pro</strong>
+                            <div style="font-size:0.8rem; color:#aaa;">IMEI: 3546810...</div>
+                            <div style="font-size:0.8rem; color:#aaa;">Color: Negro Espacial</div>
+                        </div>
+                        <div>
+                            <button class="action-btn-small secondary" onclick="alert('Abrir edición de dispositivo')">✏️</button>
+                        </div>
+                    </div>
+                    
+                    <div class="inventory-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#1a1a1a;">
+                        <div>
+                            <strong style="color:var(--dorado)">Sony PlayStation 5</strong>
+                            <div style="font-size:0.8rem; color:#aaa;">Serial: S01-9988...</div>
+                            <div style="font-size:0.8rem; color:#aaa;">Versión: Digital</div>
+                        </div>
+                        <div>
+                            <button class="action-btn-small secondary" onclick="alert('Abrir edición de dispositivo')">✏️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tabDatos" class="tab-content" style="display: none;">
+                <h4 style="color: #74b9ff; margin-bottom: 15px;">Información de Contacto</h4>
+                <div class="profile-info-grid" style="display: grid; gap: 15px; color: #eaeaea;">
+                    <div>
+                        <strong style="color: #aaa; display:block; font-size: 0.85rem;">Email:</strong>
+                        <span id="clientEmail">carlos@email.com</span>
+                    </div>
+                    <div>
+                        <strong style="color: #aaa; display:block; font-size: 0.85rem;">Teléfono:</strong>
+                        <span id="clientPhone">11-5555-4444</span>
+                    </div>
+                    <div>
+                        <strong style="color: #aaa; display:block; font-size: 0.85rem;">DNI:</strong>
+                        <span>12.345.678</span>
+                    </div>
+                    <div>
+                        <strong style="color: #aaa; display:block; font-size: 0.85rem;">Dirección:</strong>
+                        <span>Av. Corrientes 1234, CABA</span>
+                    </div>
+                </div>
+                
+                <div class="internal-notes" style="margin-top:20px; padding-top:15px; border-top:1px solid #333;">
+                    <h4 style="color:var(--dorado)">📝 Notas Internas</h4>
+                    <form action="{{ url_for('admin_crm') }}" method="POST">
+                        <input type="hidden" name="action_type" value="save_note">
+                        <textarea name="internal_note" rows="2" style="width:100%; background:#222; border:1px solid #444; color:white; padding:10px;">Cliente exigente. Pide factura A.</textarea>
+                        <button type="submit" class="action-btn-small" style="margin-top:10px;">Guardar Nota</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="modalNewClient" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('modalNewClient')">&times;</span>
+        <div class="modal-header">
+            <h2>➕ Registrar Cliente</h2>
+        </div>
+        <div class="modal-body">
+            <form action="{{ url_for('admin_crm') }}" method="POST" class="inventory-form">
+                <input type="hidden" name="action_type" value="add_client">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" name="new_name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>DNI</label>
+                        <input type="text" name="new_dni" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" name="new_phone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="new_email">
+                </div>
+                <button type="submit" class="login-btn" style="width:100%">Guardar Cliente</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modalNewDevice" class="modal" style="z-index: 3002;"> <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('modalNewDevice')">&times;</span>
+        <div class="modal-header">
+            <h2>📱 Asociar Dispositivo</h2>
+            <p style="font-size:0.9rem; color:#aaa;">Para el cliente seleccionado</p>
+        </div>
+        <div class="modal-body">
+            <form action="{{ url_for('admin_crm') }}" method="POST" class="inventory-form">
+                <input type="hidden" name="action_type" value="add_device">
+                
+                <div class="form-group">
+                    <label>Tipo de Equipo</label>
+                    <select name="device_type">
+                        <option value="celular">Celular</option>
+                        <option value="notebook">Notebook / Laptop</option>
+                        <option value="consola">Consola de Videojuegos</option>
+                        <option value="tablet">Tablet</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Marca</label>
+                        <input type="text" name="brand" placeholder="Ej: Samsung, Apple">
+                    </div>
+                    <div class="form-group">
+                        <label>Modelo</label>
+                        <input type="text" name="model" placeholder="Ej: S23 Ultra">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Serial / IMEI / Identificador</label>
+                    <input type="text" name="serial" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Contraseña / Patrón (Opcional)</label>
+                    <input type="text" name="password_device" placeholder="Ej: 1234 o Patrón 'Z'">
+                </div>
+
+                <button type="submit" class="login-btn" style="width:100%">Guardar Equipo</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modalNewRepair" class="modal" style="z-index: 3002;">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('modalNewRepair')">&times;</span>
+        <div class="modal-header" style="background:#2d3436;">
+            <h2>🔧 Registrar Reparación</h2>
+        </div>
+        <div class="modal-body">
+            <form action="{{ url_for('admin_crm') }}" method="POST" class="inventory-form">
+                <input type="hidden" name="action_type" value="add_repair">
+                
+                <div class="form-group">
+                    <label>Dispositivo a Reparar</label>
+                    <select name="device_id">
+                        <option value="1">iPhone 14 Pro (IMEI: ...810)</option>
+                        <option value="2">PlayStation 5 (Serial: ...988)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Falla Reportada / Solicitud</label>
+                    <textarea name="issue" rows="3" placeholder="Ej: Pantalla rota, no carga, limpieza..." required style="width:100%; background:#111; border:1px solid #333; color:white; padding:10px;"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Presupuesto Est. ($)</label>
+                        <input type="number" name="budget">
+                    </div>
+                    <div class="form-group">
+                        <label>Prioridad</label>
+                        <select name="priority">
+                            <option value="normal">Normal</option>
+                            <option value="alta">Alta / Urgente</option>
+                            <option value="baja">Baja</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn" style="width:100%; background:#4dabf7; color:white;">Iniciar Reparación</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filtro
+    function filterClients() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("clientSearch");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("clientTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    // Gestión de Modales
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "flex";
+    }
+
+    function openClientInfo(name, type) {
+        document.getElementById('modalClientInfo').style.display = "flex";
+        document.getElementById('modalClientName').innerText = name;
+        
+        let badge = document.getElementById('modalClientBadge');
+        badge.innerText = type;
+        badge.className = ''; 
+        if (type.includes('VIP')) badge.classList.add('badge-vip');
+        else if (type.includes('Regular')) badge.classList.add('badge-regular');
+        else badge.classList.add('badge-new');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+
+    // Cerrar al hacer click afuera
+    window.onclick = function (event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
+    }
+
+    // Pestañas
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+</script>
+{% endblock %}

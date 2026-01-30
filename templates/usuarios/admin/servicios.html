@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+
+{% block title %}Configuración de Servicios | IHP Admin{% endblock %}
+
+{% block content %}
+<div id="adminPanel" class="services-panel">
+  
+  <div class="admin-header">
+    <div>
+      <h2><span>⚙️</span> Configuración de Servicios</h2>
+      <p>Gestiona precios, tiempos y categorías de dispositivos.</p>
+    </div>
+    <a href="{{ url_for('admin_panel') }}" class="back-btn">
+      <span>⬅️</span> Volver
+    </a>
+  </div>
+
+  <div class="services-grid">
+    
+    <div class="services-list-section">
+      <div class="section-header">
+        <h3>📋 Catálogo de Servicios Activos</h3>
+        <div class="search-box">
+          <input type="text" id="serviceSearch" onkeyup="filterServices()" placeholder="Buscar servicio...">
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="servicesTable">
+          <thead>
+            <tr>
+              <th>Servicio</th>
+              <th>Categoría</th>
+              <th>Precio ($)</th>
+              <th>Tiempo Est.</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Cambio de Módulo (Pantalla)</strong></td>
+              <td><span class="tag-category">Celulares</span></td>
+              <td class="price-cell">$120,000</td>
+              <td>2 - 4 horas</td>
+              <td>
+                <button onclick="openEditModal('Cambio de Módulo', 'Celulares', 120000, '2 - 4 horas')" class="action-btn-small">✏️</button>
+                <button class="action-btn-small danger">🗑️</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Cambio de Batería</strong></td>
+              <td><span class="tag-category">Celulares</span></td>
+              <td class="price-cell">$45,000</td>
+              <td>1 hora</td>
+              <td>
+                <button onclick="openEditModal('Cambio de Batería', 'Celulares', 45000, '1 hora')" class="action-btn-small">✏️</button>
+                <button class="action-btn-small danger">🗑️</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Mantenimiento Térmico</strong></td>
+              <td><span class="tag-category console">Consolas</span></td>
+              <td class="price-cell">$35,000</td>
+              <td>24 horas</td>
+              <td>
+                <button onclick="openEditModal('Mantenimiento Térmico', 'Consolas', 35000, '24 horas')" class="action-btn-small">✏️</button>
+                <button class="action-btn-small danger">🗑️</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Formateo + Backup</strong></td>
+              <td><span class="tag-category pc">Notebooks</span></td>
+              <td class="price-cell">$25,000</td>
+              <td>48 horas</td>
+              <td>
+                <button onclick="openEditModal('Formateo + Backup', 'Notebooks', 25000, '48 horas')" class="action-btn-small">✏️</button>
+                <button class="action-btn-small danger">🗑️</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="config-sidebar">
+      
+      <div class="config-card">
+        <h3>🏷️ Categorías Activas</h3>
+        <div class="categories-container">
+          <span class="category-chip">Celulares <button>×</button></span>
+          <span class="category-chip">Consolas <button>×</button></span>
+          <span class="category-chip">Notebooks <button>×</button></span>
+          <span class="category-chip">PC Escritorio <button>×</button></span>
+          <span class="category-chip">Tablets <button>×</button></span>
+        </div>
+        
+        <form action="{{ url_for('admin_servicios') }}" method="POST" class="add-category-form">
+          <input type="hidden" name="action_type" value="add_category">
+          <input type="text" name="new_category" placeholder="+ Nueva categoría" required>
+          <button type="submit">Agregar</button>
+        </form>
+      </div>
+
+      <div class="config-card">
+        <h3>➕ Nuevo Servicio</h3>
+        <form action="{{ url_for('admin_servicios') }}" method="POST" class="new-service-form">
+          <input type="hidden" name="action_type" value="add_service">
+          
+          <div class="form-group">
+            <label>Nombre del Servicio</label>
+            <input type="text" name="service_name" placeholder="Ej: Limpieza Puerto de Carga" required>
+          </div>
+
+          <div class="form-group">
+            <label>Categoría</label>
+            <select name="category">
+              <option>Celulares</option>
+              <option>Consolas</option>
+              <option>Notebooks</option>
+              <option>Otros</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Precio ($)</label>
+              <input type="number" name="price" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label>Tiempo Est.</label>
+              <input type="text" name="time" placeholder="Ej: 2 horas" required>
+            </div>
+          </div>
+
+          <button type="submit" class="login-btn" style="width:100%">Guardar Servicio</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="modalEditService" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalEditService')">&times;</span>
+    <div class="modal-header">
+      <h2>✏️ Editar Servicio</h2>
+    </div>
+    <div class="modal-body">
+      <form action="{{ url_for('admin_servicios') }}" method="POST" class="inventory-form">
+        <input type="hidden" name="action_type" value="update_service">
+        
+        <div class="form-group">
+          <label>Nombre del Servicio</label>
+          <input type="text" id="editName" name="service_name">
+        </div>
+
+        <div class="form-group">
+          <label>Categoría</label>
+          <select id="editCategory" name="category">
+            <option>Celulares</option>
+            <option>Consolas</option>
+            <option>Notebooks</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Precio ($)</label>
+            <input type="number" id="editPrice" name="price">
+          </div>
+          <div class="form-group">
+            <label>Tiempo Estimado</label>
+            <input type="text" id="editTime" name="time">
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn" style="width:100%">Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Filtro de búsqueda
+  function filterServices() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("serviceSearch");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("servicesTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+  // Abrir Modal con datos precargados
+  function openEditModal(name, category, price, time) {
+    document.getElementById('editName').value = name;
+    document.getElementById('editCategory').value = category;
+    document.getElementById('editPrice').value = price;
+    document.getElementById('editTime').value = time;
+    
+    // Usamos 'flex' porque actualizamos el CSS global de modales
+    document.getElementById('modalEditService').style.display = "flex";
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+  }
+
+  window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+      event.target.style.display = "none";
+    }
+  }
+</script>
+{% endblock %}
