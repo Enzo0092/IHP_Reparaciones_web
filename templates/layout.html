@@ -4,23 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>{% block title %}IHP Reparaciones | Servicio Técnico{% endblock %}</title>
+  <title>{% block title %}{{ site_config.name }} | Servicio Técnico{% endblock %}</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
 <body>
 
-  <!-- HEADER / NAV -->
   <header class="menu-sticky">
     <div class="menu-container">
 
       <div class="menu-logo">
         <img
-          src="{{ url_for('static', filename='assets/img/logo.png') }}"
-          alt="IHP Reparaciones"
+          src="{{ url_for('static', filename='assets/img/' + site_config.logo) }}"
+          alt="{{ site_config.name }}"
         >
-        <span>IHP Reparaciones</span>
+        <span>{{ site_config.name }}</span>
       </div>
 
       <nav class="menu-nav" id="menu-nav">
@@ -28,6 +27,25 @@
         <a href="{{ url_for('celulares') }}">Celulares</a>
         <a href="{{ url_for('pcs') }}">PCs</a>
         <a href="{{ url_for('consolas') }}">Consolas</a>
+        
+        {% if session.get('user_logged_in') %}
+          {% set role = session.get('user_role') %}
+          {% if role == 1 %}
+            <a href="{{ url_for('admin_panel') }}" class="admin-link">
+              👑 Panel Admin
+            </a>
+            <button onclick="openConfigModal()" class="config-btn" title="Editar Apariencia">✏️</button>
+          {% elif role == 2 %}
+            <a href="{{ url_for('tecnico_panel') }}" class="tecnico-link">
+              🔧 Panel Técnico
+            </a>
+          {% elif role == 0 %}
+            <a href="{{ url_for('cliente_panel') }}" class="cliente-link">
+              👤 Mi Panel
+            </a>
+          {% endif %}
+        {% endif %}
+        
         <a href="https://www.adrinavarrodev.com" target="_blank" rel="noopener">
           Desarrollo de Software
         </a>
@@ -37,16 +55,15 @@
     </div>
   </header>
 
-  <!-- BANNER -->
-  <section class="banner">
+  <section class="banner" style="background-image: url({{ url_for('static', filename='assets/img/' + site_config.banner) }});">
     <div class="banner-content">
       <img
-        src="{{ url_for('static', filename='assets/img/logo.png') }}"
+        src="{{ url_for('static', filename='assets/img/' + site_config.logo) }}"
         class="logo"
-        alt="IHP Reparaciones"
+        alt="{{ site_config.name }}"
       >
 
-      <h1>IHP Reparaciones</h1>
+      <h1>{{ site_config.name }}</h1>
       <p>
         Servicio técnico en Electrónica e Informática <br>
         <strong>
@@ -56,34 +73,18 @@
     </div>
   </section>
 
-  <!-- CONTENIDO DINÁMICO -->
   <main>
     {% block content %}{% endblock %}
   </main>
 
-  <!-- FOOTER -->
   <footer id="contacto">
     <div class="contacto-botones">
-
-      <a href="https://www.instagram.com/ihp_reparaciones/" target="_blank" class="btn-contacto instagram">
-        📷 Instagram
-      </a>
-
-      <a href="https://wa.me/5493795321712" target="_blank" class="btn-contacto whatsapp">
-        📲 WhatsApp
-      </a>
-
-      <a href="https://www.youtube.com/" target="_blank" class="btn-contacto youtube">
-        ▶️ YouTube
-      </a>
-
-      <a href="https://www.tiktok.com/" target="_blank" class="btn-contacto tiktok">
-        🎵 TikTok
-      </a>
-
+      <a href="https://www.instagram.com/ihp_reparaciones/" target="_blank" class="btn-contacto instagram">📷 Instagram</a>
+      <a href="https://wa.me/5493795321712" target="_blank" class="btn-contacto whatsapp">📲 WhatsApp</a>
+      <a href="https://www.youtube.com/" target="_blank" class="btn-contacto youtube">▶️ YouTube</a>
+      <a href="https://www.tiktok.com/" target="_blank" class="btn-contacto tiktok">🎵 TikTok</a>
     </div>
 
-    <!-- FORMULARIO (luego se conecta con fetch) -->
     <form>
       <input type="text" name="nombre" placeholder="Tu nombre" required>
       <input type="email" name="email" placeholder="Tu correo" required>
@@ -91,10 +92,72 @@
       <button type="submit">Enviar</button>
     </form>
 
-    <p class="copy">© 2026 IHP Reparaciones</p>
+    <p class="copy">© 2026 {{ site_config.name }}</p>
   </footer>
 
+  {% if session.get('user_role') == 1 %}
+  <div id="siteConfigModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeConfigModal()">&times;</span>
+        <div class="modal-header">
+            <h2>⚙️ Personalizar Sitio</h2>
+        </div>
+        <div class="modal-body">
+            <form action="{{ url_for('update_site_config') }}" method="POST" enctype="multipart/form-data" class="inventory-form">
+                
+                <div class="form-group">
+                    <label>Nombre del Negocio</label>
+                    <input type="text" name="site_name" value="{{ site_config.name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Logo Actual</label>
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="{{ url_for('static', filename='assets/img/' + site_config.logo) }}" style="max-height: 80px;">
+                    </div>
+                    <label for="uploadLogo" class="action-btn-small secondary" style="display:inline-block; cursor:pointer; text-align:center;">
+                        📂 Subir Nuevo Logo
+                    </label>
+                    <input type="file" id="uploadLogo" name="site_logo" accept="image/*" style="display:none;">
+                    <small id="logoName" style="color:#aaa; display:block; margin-top:5px;"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Banner Principal</label>
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="{{ url_for('static', filename='assets/img/' + site_config.banner) }}" style="max-height: 80px; width:100%; object-fit:cover;">
+                    </div>
+                    <label for="uploadBanner" class="action-btn-small secondary" style="display:inline-block; cursor:pointer; text-align:center;">
+                        🖼️ Subir Nuevo Banner
+                    </label>
+                    <input type="file" id="uploadBanner" name="site_banner" accept="image/*" style="display:none;">
+                    <small id="bannerName" style="color:#aaa; display:block; margin-top:5px;"></small>
+                </div>
+
+                <button type="submit" class="login-btn" style="width:100%">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    function openConfigModal() {
+        document.getElementById('siteConfigModal').style.display = "flex";
+    }
+    function closeConfigModal() {
+        document.getElementById('siteConfigModal').style.display = "none";
+    }
+    
+    // Mostrar nombre del archivo seleccionado
+    document.getElementById('uploadLogo').onchange = function () {
+        document.getElementById('logoName').textContent = this.files[0].name;
+    };
+    document.getElementById('uploadBanner').onchange = function () {
+        document.getElementById('bannerName').textContent = this.files[0].name;
+    };
+  </script>
+  {% endif %}
+
   <script src="{{ url_for('static', filename='js/Menu.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
 </html>

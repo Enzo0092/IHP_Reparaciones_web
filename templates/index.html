@@ -3,101 +3,314 @@
 {% block title %}Inicio | IHP Reparaciones{% endblock %}
 
 {% block content %}
-<body>
+
+<style>
+  /* Carrusel */
+  .hero-slider {
+    position: relative;
+    width: 100%;
+    height: 500px; /* Altura del banner */
+    overflow: hidden;
+    background: #000;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide.active {
+    opacity: 1;
+  }
+
+  /* Capa oscura sobre la imagen para que se lea el texto */
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); 
+  }
+
+  .slide-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+    padding: 20px;
+    animation: fadeInUp 1s ease forwards;
+  }
+
+  .slide-title {
+    font-size: 3rem;
+    color: var(--dorado);
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  }
+
+  .slide-desc {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 25px;
+  }
+
+  .btn-hero {
+    padding: 12px 30px;
+    background: var(--dorado);
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-hero:hover {
+    background: #fff;
+    transform: scale(1.05);
+  }
+
+  /* Controles del Carrusel */
+  .slider-nav {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 3;
+  }
+
+  .nav-dot {
+    width: 12px;
+    height: 12px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .nav-dot.active {
+    background: var(--dorado);
+    transform: scale(1.2);
+  }
+
+  /* Sección de Ventajas (Iconos) */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: -50px; /* Superposición visual */
+    position: relative;
+    z-index: 10;
+    padding-bottom: 50px;
+  }
+
+  .feature-card {
+    background: #1a1a1a;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border-bottom: 3px solid var(--dorado);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-10px);
+  }
+
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .slide-title { font-size: 2rem; }
+    .hero-slider { height: 400px; }
+  }
+</style>
+
+<div class="hero-slider" id="homeSlider">
+  <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1591799264318-7e6ef8ddbb56?q=80&w=1920&auto=format&fit=crop');">
+    <div class="slide-content">
+      <h1 class="slide-title">Expertos en Tecnología</h1>
+      <p class="slide-desc">Reparamos tu mundo digital. Celulares, consolas y computadoras en manos de profesionales.</p>
+      <a href="#servicios" class="btn-hero">Ver Servicios</a>
+    </div>
+  </div>
+
+  <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop');">
+    <div class="slide-content">
+      <h1 class="slide-title">Vuelve al Juego</h1>
+      <p class="slide-desc">Servicio técnico especializado para PlayStation, Xbox y Nintendo. No dejes que una falla te detenga.</p>
+      <a href="{{ url_for('consolas') }}" class="btn-hero">Reparar Consola</a>
+    </div>
+  </div>
+
+  <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1588508065123-287b28e013da?q=80&w=1920&auto=format&fit=crop');">
+    <div class="slide-content">
+      <h1 class="slide-title">Calidad Garantizada</h1>
+      <p class="slide-desc">Usamos repuestos originales y ofrecemos garantía escrita en todas nuestras reparaciones.</p>
+      <a href="#contacto" class="btn-hero">Contactanos</a>
+    </div>
+  </div>
+
+  <div class="slider-nav">
+    <div class="nav-dot active" onclick="goToSlide(0)"></div>
+    <div class="nav-dot" onclick="goToSlide(1)"></div>
+    <div class="nav-dot" onclick="goToSlide(2)"></div>
+  </div>
+</div>
+
+<div class="contenedor">
   
-  <!-- QUIÉNES SOMOS -->
-  <section id="quienes" class="contenedor">
-    <h2>Quiénes Somos</h2>
-    <p>
-      En <strong>IHP Reparaciones</strong> nos especializamos en la reparación
-      de celulares, computadoras y equipos electrónicos. Trabajamos con
-      diagnóstico real, soluciones claras y atención personalizada.
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h3>Reparación Express</h3>
+      <p>Sabemos que tu tiempo vale. Diagnósticos rápidos y reparaciones en el día para fallas comunes.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🛡️</span>
+      <h3>Garantía Real</h3>
+      <p>Tranquilidad asegurada. Todos nuestros trabajos cuentan con garantía de 90 días por escrito.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔬</span>
+      <h3>Laboratorio Propio</h3>
+      <p>Contamos con herramientas de última generación para microelectrónica y diagnósticos precisos.</p>
+    </div>
+  </div>
+
+  <section id="quienes" style="margin-top: 50px; text-align: center;">
+    <h2 style="color:var(--dorado); margin-bottom: 20px;">Quiénes Somos</h2>
+    <p style="max-width: 800px; margin: 0 auto; line-height: 1.6; color: #ccc;">
+      En <strong>IHP Reparaciones</strong> nos especializamos en la reparación integral
+      de dispositivos electrónicos. No somos solo "cambia piezas"; somos técnicos apasionados 
+      que buscan la raíz del problema para ofrecerte una solución duradera y honesta. 
+      Tu confianza es nuestro repuesto más valioso.
     </p>
     
-    <!-- Botón para abrir modal de login -->
     <div style="margin-top: 30px;">
-      <button id="open-login-modal" class="btn-login" style="
-        background: var(--dorado);
-        color: black;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-      ">
-        🔐 Iniciar Sesión (Admin)
+      <button id="open-login-modal" class="action-btn-small secondary" style="border-radius: 20px; font-size: 0.8rem;">
+        🔐 Acceso Staff
       </button>
     </div>
   </section>
 
-  <!-- SERVICIOS -->
-  <section id="servicios" class="contenedor">
-    <h2>Servicios</h2>
+  <hr style="border-color: #333; margin: 60px 0;">
+
+  <section id="servicios">
+    <h2 style="text-align: center; margin-bottom: 40px;">Nuestros Servicios</h2>
 
     <div class="grid-servicios">
-
       <a href="{{ url_for('celulares') }}" class="card-link">
-        <div class="card">
-          <h3>Reparación de Celulares</h3>
-          <p>
-            Cambio de pantallas, baterías, puertos de carga, software y
-            diagnóstico electrónico.
-          </p>
+        <div class="card" style="height: 100%; transition: 0.3s;">
+          <div style="font-size: 3rem; margin-bottom: 10px; text-align:center;">📱</div>
+          <h3 style="text-align: center;">Celulares</h3>
+          <p style="text-align: center;">Cambio de módulos, baterías, pin de carga y micro-soldadura.</p>
         </div>
       </a>
 
-      <a href="pcs.html" class="card-link">
-        <div class="card">
-          <h3>Computadoras y Notebooks</h3>
-          <p>
-            Instalación de sistemas, mantenimiento, limpieza interna,
-            optimización y upgrades.
-          </p>
+      <a href="{{ url_for('pcs') }}" class="card-link">
+        <div class="card" style="height: 100%; transition: 0.3s;">
+          <div style="font-size: 3rem; margin-bottom: 10px; text-align:center;">💻</div>
+          <h3 style="text-align: center;">PC & Notebooks</h3>
+          <p style="text-align: center;">Optimización, limpieza, instalación de SSD y reparación de placa.</p>
         </div>
       </a>
       
-      <a href="consolas.html" class="card-link">
-        <div class="card">
-          <h3>Consolas de videojuegos</h3>
-          <p>
-            Mantenimiento, limpieza interna,
-            optimización, Reparacion a nivel electrónico.
-          </p>
+      <a href="{{ url_for('consolas') }}" class="card-link">
+        <div class="card" style="height: 100%; transition: 0.3s;">
+          <div style="font-size: 3rem; margin-bottom: 10px; text-align:center;">🎮</div>
+          <h3 style="text-align: center;">Consolas</h3>
+          <p style="text-align: center;">Mantenimiento térmico, reparación de HDMI y fuentes de poder.</p>
         </div>
       </a>
+    </div>
+  </section>
+
+  <section id="testimonios" style="margin-top: 80px; background: #1a1a1a; padding: 40px; border-radius: 15px;">
+    <h2 style="text-align: center; color: var(--dorado);">Lo que dicen nuestros clientes</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 30px;">
+      
+      <div style="flex: 1 1 300px; background: #000; padding: 20px; border-radius: 10px; border-left: 4px solid var(--dorado);">
+        <p style="font-style: italic; color: #ccc;">"Excelente atención y diagnóstico claro. Mi iPhone quedó como nuevo después de que en otros lados me dijeran que no tenía arreglo."</p>
+        <h4 style="margin-top: 15px; color: white;">- María G.</h4>
+      </div>
+
+      <div style="flex: 1 1 300px; background: #000; padding: 20px; border-radius: 10px; border-left: 4px solid var(--dorado);">
+        <p style="font-style: italic; color: #ccc;">"Llevé mi PS5 por sobrecalentamiento y me la devolvieron impecable y silenciosa. Trabajo super prolijo."</p>
+        <h4 style="margin-top: 15px; color: white;">- Lucas F.</h4>
+      </div>
 
     </div>
   </section>
 
-  <!-- TESTIMONIOS -->
-  <section id="testimonios" class="contenedor">
-    <h2>Experiencias de clientes</h2>
-
-    <blockquote>
-      "Excelente atención y diagnóstico claro. El equipo quedó funcionando
-      perfecto."
-    </blockquote>
-
-    <blockquote>
-      "Trabajo prolijo, precios razonables y mucha transparencia."
-    </blockquote>
+  <section id="youtube" style="text-align: center; margin: 80px 0;">
+    <h2>📺 Contenido Técnico</h2>
+    <p style="margin-bottom: 20px;">Mirá cómo trabajamos. Transparencia total en cada reparación.</p>
+    <div style="max-width: 600px; margin: 0 auto; border: 2px dashed #333; padding: 40px; border-radius: 10px;">
+      <span style="font-size: 3rem;">🎥</span>
+      <p>Próximamente videos de reparaciones reales en nuestro canal.</p>
+      <button class="action-btn-small" style="background: red; color: white; border: none; margin-top: 10px;">Suscribirse a YouTube</button>
+    </div>
   </section>
 
-  <!-- YOUTUBE -->
-  <section id="youtube" class="contenedor">
-    <h2>Contenido técnico</h2>
-    <p>
-      Próximamente voy a estar subiendo reparaciones reales y procesos técnicos
-      a mi canal de YouTube.
-    </p>
-  </section>
+</div>
 
-  <!-- MODAL DE LOGIN (se incluye aquí para que esté disponible en todas las páginas) -->
-  {% include 'partials/login-modal.html' %}
+{% include 'partials/login-modal.html' %}
 
-  <!-- PANEL DE ADMIN (oculto inicialmente) -->
-  {% include 'partials/admin-panel.html' %}
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dot');
+  const totalSlides = slides.length;
 
-</body>
+  function showSlide(index) {
+    // Reset
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    // Logic
+    currentSlide = index;
+    if (currentSlide >= totalSlides) currentSlide = 0;
+    if (currentSlide < 0) currentSlide = totalSlides - 1;
+
+    // Active
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
+  }
+
+  function nextSlide() {
+    showSlide(currentSlide + 1);
+  }
+
+  function goToSlide(index) {
+    showSlide(index);
+  }
+
+  // Auto-play cada 5 segundos
+  setInterval(nextSlide, 5000);
+</script>
+
 {% endblock %}

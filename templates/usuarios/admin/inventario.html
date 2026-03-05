@@ -1,0 +1,264 @@
+{% extends "layout.html" %}
+
+{% block title %}Gestión de Inventario | IHP Admin{% endblock %}
+
+{% block content %}
+<div id="adminPanel" class="inventory-panel">
+  
+  <div class="admin-header">
+    <div>
+      <h2><span>📦</span> Gestión de Inventario</h2>
+      <p>Control de stock, proveedores y mermas</p>
+    </div>
+    <a href="{{ url_for('admin_panel') }}" class="back-btn">
+      <span>⬅️</span> Volver al Panel
+    </a>
+  </div>
+
+  <div class="dashboard-stats">
+    <div class="stat-card alert-card">
+      <div class="icon">⚠️</div>
+      <h3>Stock Bajo</h3>
+      <p>Productos requieren reposición</p>
+      <div class="number text-danger">4</div> </div>
+    
+    <div class="stat-card">
+      <div class="icon">📋</div>
+      <h3>Total Items</h3>
+      <p>Referencias activas</p>
+      <div class="number">142</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="icon">🚛</div>
+      <h3>Proveedores</h3>
+      <p>Registrados</p>
+      <div class="number">8</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="icon">🗑️</div>
+      <h3>Mermas (Mes)</h3>
+      <p>Pérdidas registradas</p>
+      <div class="number text-warning">$1,200</div>
+    </div>
+  </div>
+
+  <div class="inventory-toolbar">
+    <div class="search-box">
+      <input type="text" placeholder="Buscar producto por nombre o SKU...">
+      <button>🔍</button>
+    </div>
+
+    <div class="action-buttons">
+      <button onclick="openModal('modalProducto')" class="action-btn-small">
+        <span>➕</span> Nuevo Producto
+      </button>
+      <button onclick="openModal('modalProveedor')" class="action-btn-small secondary">
+        <span>🚛</span> Proveedores
+      </button>
+      <button onclick="openModal('modalMerma')" class="action-btn-small danger">
+        <span>📉</span> Registrar Merma
+      </button>
+    </div>
+  </div>
+
+  <div class="recent-orders">
+    <h3>Inventario Actual</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Stock Actual</th>
+            <th>Stock Mín.</th>
+            <th>Costo / Venta</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IP14-BAT</td>
+            <td>Batería iPhone 14 Pro</td>
+            <td>Repuestos</td>
+            <td>AppleParts Arg</td>
+            <td>15</td>
+            <td>5</td>
+            <td>$30 / $60</td>
+            <td><span class="status-ok">En Stock</span></td>
+            <td>
+              <button class="table-btn edit">✏️</button>
+            </td>
+          </tr>
+          <tr>
+            <td>GLX-S23-SCR</td>
+            <td>Módulo Samsung S23</td>
+            <td>Pantallas</td>
+            <td>Samsung Official</td>
+            <td class="stock-critical">2</td> <td>3</td>
+            <td>$150 / $220</td>
+            <td><span class="status-alert">Bajo Stock</span></td>
+            <td>
+              <button class="table-btn edit">✏️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="modalProducto" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalProducto')">&times;</span>
+    <div class="modal-header">
+      <h2>📦 Nuevo Producto</h2>
+    </div>
+    <div class="modal-body">
+      <form action="#" method="POST" class="inventory-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre del Producto</label>
+            <input type="text" name="nombre" required>
+          </div>
+          <div class="form-group">
+            <label>SKU / Código</label>
+            <input type="text" name="sku">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoría</label>
+            <select name="categoria">
+              <option value="repuesto">Repuesto</option>
+              <option value="accesorio">Accesorio</option>
+              <option value="herramienta">Herramienta</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Proveedor</label>
+            <select name="proveedor">
+              <option value="1">AppleParts Arg</option>
+              <option value="2">Samsung Official</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Stock Inicial</label>
+            <input type="number" name="stock" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>Alerta Stock Mínimo</label>
+            <input type="number" name="min_stock" min="1" value="5" title="Se avisará cuando baje de este número">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Costo ($)</label>
+            <input type="number" name="costo" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Precio Venta ($)</label>
+            <input type="number" name="precio" step="0.01">
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn" style="width:100%">Guardar Producto</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modalProveedor" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalProveedor')">&times;</span>
+    <div class="modal-header">
+      <h2>🚛 Nuevo Proveedor</h2>
+    </div>
+    <div class="modal-body">
+      <form action="#" method="POST" class="inventory-form">
+        <div class="form-group">
+          <label>Nombre Empresa</label>
+          <input type="text" required>
+        </div>
+        <div class="form-group">
+          <label>Contacto (Tel/Email)</label>
+          <input type="text">
+        </div>
+        <div class="form-group">
+          <label>Tiempo entrega prom. (días)</label>
+          <input type="number">
+        </div>
+        <button type="submit" class="login-btn" style="width:100%">Guardar Proveedor</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modalMerma" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalMerma')">&times;</span>
+    <div class="modal-header" style="background: #a91e1e;"> <h2>📉 Registrar Merma</h2>
+    </div>
+    <div class="modal-body">
+      <form action="#" method="POST" class="inventory-form">
+        <div class="form-group">
+          <label>Producto Afectado</label>
+          <select>
+            <option>Seleccionar producto...</option>
+            </select>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cantidad Perdida</label>
+            <input type="number" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Motivo</label>
+            <select>
+              <option value="roto">Dañado / Roto</option>
+              <option value="vencido">Vencido</option>
+              <option value="robo">Robo / Pérdida</option>
+              <option value="falla">Falla de Fabrica</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Observaciones</label>
+          <textarea rows="3" style="width:100%; background:#111; color:white; border:1px solid #333; padding:10px;"></textarea>
+        </div>
+
+        <button type="submit" class="login-btn" style="width:100%; background: #a91e1e; color: white;">Confirmar Baja</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Script simple para manejar los modales
+  function openModal(modalId) {
+    document.getElementById(modalId).style.display = "flex";
+  }
+  
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+  }
+  
+  // Cerrar si se hace click fuera del modal
+  window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+      event.target.style.display = "none";
+    }
+  }
+</script>
+{% endblock %}

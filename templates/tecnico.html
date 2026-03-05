@@ -1,0 +1,345 @@
+{% extends "layout.html" %}
+
+{% block title %}Panel de Técnico | IHP Reparaciones{% endblock %}
+
+{% block content %}
+<div id="tecnicoPanel">
+
+  <div class="tecnico-header">
+    <div>
+      <h2><span>🔧</span> Panel de Técnico</h2>
+      <p>Bienvenido, {{ session.get('user_name', 'Técnico') }}</p>
+      <p class="user-role">🛠️ Rol: Técnico de Reparaciones</p>
+    </div>
+
+    <div class="header-actions">
+      <button onclick="openModal('modalChat')" class="action-btn-small"
+        style="background:#2d3436; border:1px solid #555;">
+        💬 Chat Admin
+      </button>
+
+      <div class="tecnico-status">
+        <span class="status-indicator active"></span>
+        <span>Disponible</span>
+      </div>
+      <a href="{{ url_for('logout') }}" id="logoutBtn" class="logout-btn">
+        <span>🚪</span> Salir
+      </a>
+    </div>
+  </div>
+
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <div class="icon">⏳</div>
+      <h3>En Proceso</h3>
+      <div class="number">5</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">✅</div>
+      <h3>Completadas Hoy</h3>
+      <div class="number">3</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">⏱️</div>
+      <h3>Promedio</h3>
+      <p>Tiempo por equipo</p>
+      <div class="number">45m</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">⚠️</div>
+      <h3>Reclamos</h3>
+      <div class="number text-danger">0</div>
+    </div>
+  </div>
+
+  <div class="my-repairs">
+    <div class="section-header">
+      <h3>🛠️ Mis Reparaciones Activas</h3>
+      <button class="btn-refresh">🔄 Actualizar</button>
+    </div>
+
+    <div class="repairs-list">
+      <div class="repair-card urgent">
+        <div class="repair-info">
+          <h4>#R-015</h4>
+          <p><strong>Cliente:</strong> Ana Martínez</p>
+          <p><strong>Dispositivo:</strong> iPhone 13 - Pantalla rota</p>
+          <span class="priority-high">Alta Prioridad</span>
+        </div>
+        <div class="repair-status">
+          <span class="status-badge in-progress">En Proceso</span>
+          <button class="btn-action start" onclick="openWorkBench('#R-015', 'iPhone 13', 'Cambio de Módulo')">
+            ▶️ Continuar Trabajo
+          </button>
+        </div>
+      </div>
+
+      <div class="repair-card">
+        <div class="repair-info">
+          <h4>#R-014</h4>
+          <p><strong>Cliente:</strong> Carlos López</p>
+          <p><strong>Dispositivo:</strong> PS5 - Sobrecalentamiento</p>
+          <span class="priority-medium">Media</span>
+        </div>
+        <div class="repair-status">
+          <span class="status-badge diagnosing">Pendiente</span>
+          <button class="btn-action start" onclick="openWorkBench('#R-014', 'PlayStation 5', 'Mantenimiento Térmico')">
+            ▶️ Comenzar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tecnico-tools">
+    <h3>🧰 Herramientas</h3>
+    <div class="tools-grid">
+      <div class="tool-card" onclick="openModal('modalKB')">
+        <div class="tool-icon">📚</div>
+        <h4>Base de Conocimiento</h4>
+        <p>Soluciones frecuentes</p>
+        <button class="tool-btn">Buscar</button>
+      </div>
+      <div class="tool-card" onclick="openModal('modalRequestPart')">
+        <div class="tool-icon">📦</div>
+        <h4>Solicitar Repuesto</h4>
+        <p>Pedir al almacén</p>
+        <button class="tool-btn">Solicitar</button>
+      </div>
+      <div class="tool-card">
+        <div class="tool-icon">📋</div>
+        <h4>Mi Stock</h4>
+        <p>Repuestos en mesa</p>
+        <button class="tool-btn">Ver</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="modalWorkBench" class="modal">
+  <div class="modal-content" style="max-width: 900px;"> <span class="close-modal" onclick="closeModal('modalWorkBench')">&times;</span>
+
+    <div class="modal-header"
+      style="background:#1a3a5f; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <h2 id="wbTitle" style="color:#4dabf7; font-size:1.5rem; margin:0;">Mesa de Trabajo</h2>
+        <p id="wbSubtitle" style="color:#ccc; margin:0; font-size:0.9rem;">Orden #000</p>
+      </div>
+
+      <div class="timer-box">
+        <span id="timerDisplay">00:00:00</span>
+        <button id="btnTimer" class="timer-btn start" onclick="toggleTimer()">▶️ Iniciar</button>
+      </div>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="client-tabs" style="margin-bottom: 20px; border-bottom: 1px solid #333;">
+        <button class="tab-btn active" onclick="openTab(event, 'wbBitacora')">🛠️ Bitácora y Evidencia</button>
+        <button class="tab-btn" onclick="openTab(event, 'wbPresupuesto')">💰 Cotizar a Cliente</button>
+      </div>
+
+      <div id="wbBitacora" class="tab-content" style="display:block;">
+        <form action="#" method="POST" enctype="multipart/form-data"> 
+          <div class="wb-grid">
+            
+            <div class="wb-col-main">
+              <h4 style="color:#4dabf7; margin-bottom:10px;">📝 Diagnóstico y Avance</h4>
+              <div class="form-group">
+                <textarea rows="6" placeholder="- Se desarmó el equipo...&#10;- Se limpió sulfato...&#10;- Se realizó prueba de carga..."
+                  style="background:#111; color:white; border:1px solid #333; padding:15px; width:100%; border-radius:8px;"></textarea>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Estado Actual</label>
+                  <select style="background:#111; color:white; padding:10px; width:100%; border:1px solid #333; border-radius:6px;">
+                    <option value="progress">En Proceso</option>
+                    <option value="waiting">Esperando Repuesto</option>
+                    <option value="testing">En Pruebas (Quality)</option>
+                    <option value="finished">✅ Terminado</option>
+                  </select>
+                </div>
+              </div>
+
+              <button class="login-btn" style="background:#2ecc71; margin-top:15px;">💾 Guardar Bitácora</button>
+            </div>
+
+            <div class="wb-col-sidebar">
+              <h4 style="color:#4dabf7; margin-bottom:10px;">📸 Evidencia Visual</h4>
+              
+              <div class="upload-box">
+                <label style="display:block; margin-bottom:5px; color:#aaa;">Foto Entrada (Antes)</label>
+                <div class="img-preview" onclick="document.getElementById('fileBefore').click()" style="border: 2px dashed #555; border-radius: 8px; height: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #777;">
+                  <span>+ Subir Foto</span>
+                </div>
+                <input type="file" id="fileBefore" name="photo_before" hidden accept="image/*" onchange="alert('Foto Antes seleccionada')">
+              </div>
+
+              <div class="upload-box" style="margin-top:20px;">
+                <label style="display:block; margin-bottom:5px; color:#aaa;">Foto Salida (Después)</label>
+                <div class="img-preview" onclick="document.getElementById('fileAfter').click()" style="border: 2px dashed #555; border-radius: 8px; height: 100px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #777;">
+                  <span>+ Subir Foto</span>
+                </div>
+                <input type="file" id="fileAfter" name="photo_after" hidden accept="image/*" onchange="alert('Foto Después seleccionada')">
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <div id="wbPresupuesto" class="tab-content" style="display:none;">
+        <form action="#" method="POST" enctype="multipart/form-data">
+          <h4 style="color:#ffd700;">📤 Enviar Cotización al Cliente</h4>
+          <p style="font-size:0.9rem; color:#aaa; margin-bottom:15px;">El cliente recibirá este detalle y las fotos para aprobar la reparación.</p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Costo de Repuestos ($)</label>
+              <input type="number" placeholder="0.00"
+                style="background:#111; border:1px solid #333; color:white; padding:10px; border-radius:6px;">
+            </div>
+            <div class="form-group">
+              <label>Mano de Obra ($)</label>
+              <input type="number" placeholder="0.00"
+                style="background:#111; border:1px solid #333; color:white; padding:10px; border-radius:6px;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Explicación para el Cliente</label>
+            <textarea rows="3" placeholder="Ej: Es necesario cambiar el módulo completo porque el display interno está fisurado..."
+              style="background:#111; color:white; border:1px solid #333; padding:10px; width:100%; border-radius:6px;"></textarea>
+          </div>
+
+          <div class="form-group" style="background: #111; padding: 15px; border-radius: 8px; border: 1px dashed #ffd700;">
+            <label style="color:#ffd700; display:block; margin-bottom:10px;">📸 Adjuntar Evidencia (Opcional)</label>
+            <input type="file" name="budget_images[]" multiple accept="image/*" style="color:#aaa;">
+            <p style="font-size:0.8rem; color:#666; margin-top:5px;">Puedes seleccionar varias fotos (ej: detalle de la rotura, pieza dañada).</p>
+          </div>
+
+          <div class="form-group" style="margin-top:15px;">
+            <label>Tiempo Estimado</label>
+            <select style="background:#111; color:white; padding:10px; width:100%; border-radius:6px;">
+              <option>24 Horas</option>
+              <option>48 Horas</option>
+              <option>3 - 5 Días hábiles</option>
+            </select>
+          </div>
+
+          <button type="button" class="login-btn" style="background:#ffd700; color:black; width:100%; margin-top:15px;"
+            onclick="alert('Presupuesto con fotos enviado al cliente')">
+            🚀 Enviar Presupuesto
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="modalKB" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalKB')">&times;</span>
+    <div class="modal-header"><h2>📚 Base de Conocimientos</h2></div>
+    <div class="modal-body">
+      <div class="search-box" style="margin-bottom:20px;">
+        <input type="text" placeholder="Buscar falla..." onkeyup="filterKB()" id="kbSearch">
+      </div>
+      <div class="kb-list" id="kbList">
+        <div class="kb-item"><strong>iPhone reinicios</strong><p>Revisar Panic Log (mic flex).</p></div>
+        <div class="kb-item"><strong>PS5 apaga sola</strong><p>Limpieza metal líquido / obstrucción fuente.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalRequestPart" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalRequestPart')">&times;</span>
+    <div class="modal-header" style="background:#e67e22;"><h2>📦 Pedir Repuesto</h2></div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group"><label>Repuesto</label><input type="text" required></div>
+        <button class="login-btn">Enviar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="modalChat" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal('modalChat')">&times;</span>
+    <div class="modal-header"><h2>💬 Chat</h2></div>
+    <div class="modal-body">
+      <div class="chat-history" style="height:200px; background:#111; padding:10px; overflow-y:auto; margin-bottom:10px;">
+        <div><strong style="color:#e67e22;">Admin:</strong> Hola.</div>
+      </div>
+      <input type="text" placeholder="Mensaje..." style="width:100%; padding:10px;">
+    </div>
+  </div>
+</div>
+
+<script>
+  // Lógica Cronómetro
+  let timerInterval;
+  let seconds = 0;
+  let isRunning = false;
+  function toggleTimer() {
+    const btn = document.getElementById('btnTimer');
+    if (!isRunning) {
+      isRunning = true;
+      btn.innerHTML = "⏸️ Pausar";
+      btn.classList.add('active');
+      timerInterval = setInterval(() => {
+        seconds++;
+        const date = new Date(0);
+        date.setSeconds(seconds);
+        document.getElementById('timerDisplay').innerText = date.toISOString().substr(11, 8);
+      }, 1000);
+    } else {
+      isRunning = false;
+      btn.innerHTML = "▶️ Continuar";
+      btn.classList.remove('active');
+      clearInterval(timerInterval);
+    }
+  }
+
+  // Modales
+  function openWorkBench(id, device, issue) {
+    document.getElementById('wbTitle').innerText = device;
+    document.getElementById('wbSubtitle').innerText = id + " - " + issue;
+    document.getElementById('modalWorkBench').style.display = "flex";
+  }
+  function openModal(id) { document.getElementById(id).style.display = "flex"; }
+  function closeModal(id) { document.getElementById(id).style.display = "none"; }
+  window.onclick = function (event) { if (event.target.classList.contains('modal')) event.target.style.display = "none"; }
+
+  // Pestañas (NECESARIO PARA VER EL FORMULARIO NUEVO)
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tab-btn");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    if (evt) evt.currentTarget.className += " active";
+  }
+
+  // Filtro KB
+  function filterKB() {
+    let input = document.getElementById('kbSearch').value.toUpperCase();
+    let items = document.getElementsByClassName('kb-item');
+    for (let i = 0; i < items.length; i++) {
+      let txt = items[i].innerText;
+      items[i].style.display = txt.toUpperCase().indexOf(input) > -1 ? "" : "none";
+    }
+  }
+</script>
+{% endblock %}

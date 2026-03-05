@@ -1,32 +1,168 @@
 {% extends "layout.html" %}
+{% block title %}{{ content.title }} | IHP Reparaciones{% endblock %}
 
-{% block title %}PCs| Reparaciones de Computadoras{% endblock %}
-
- {% block content %}
-
+{% block content %}
 <main class="contenedor">
-  <h2>Computadoras y Notebooks</h2>
-  <p>
-    Servicio técnico especializado en PC y laptops.
-    Mantenimiento, reparación, upgrades y optimización.
-  </p>
+  
+  {% if session.get('user_role') == 1 %}
+  <div style="text-align: right; margin-bottom: 10px;">
+      <button onclick="openEditPageModal()" class="action-btn-small" 
+              style="background: var(--dorado); color: black; border:none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: bold; padding: 10px 20px;">
+          ✏️ Editar Contenido
+      </button>
+  </div>
+  {% endif %}
+
+  <h2>{{ content.title }}</h2>
+  <p>{{ content.description }}</p>
 
   <div class="grid-servicios">
+    {% for service in content.services %}
     <div class="card">
-      <h3>Mantenimiento y Limpieza</h3>
-      <p>Limpieza interna, cambio de pasta térmica y control térmico.</p>
+      {% if service.image %}
+        <img src="{{ url_for('static', filename='assets/img/' + service.image) }}" alt="{{ service.title }}" class="card-img">
+      {% endif %}
+      
+      <h3>{{ service.title }}</h3>
+      <p>{{ service.desc }}</p>
     </div>
-
-    <div class="card">
-      <h3>Instalación de Sistemas</h3>
-      <p>Windows, drivers, software y optimización general.</p>
-    </div>
-
-    <div class="card">
-      <h3>Upgrades</h3>
-      <p>SSD, RAM, mejoras de rendimiento y asesoramiento.</p>
-    </div>
+    {% endfor %}
   </div>
 </main>
+
+{% if session.get('user_role') == 1 %}
+<div id="modalEditPage" class="modal">
+    <div class="modal-content" style="max-width: 800px;"> 
+        <span class="close-modal" onclick="closeEditPageModal()">&times;</span>
+        <div class="modal-header">
+            <h2>✏️ Editar Página: PCs</h2>
+        </div>
+        <div class="modal-body">
+            <form action="{{ url_for('edit_page_content', page_name='pcs') }}" method="POST" enctype="multipart/form-data">
+                
+                <h4 style="color:var(--dorado); margin-bottom:10px;">Información Principal</h4>
+                <div class="form-group">
+                    <label>Título de la Página</label>
+                    <input type="text" name="page_title" value="{{ content.title }}" required 
+                           style="width:100%; padding:10px; background:#111; border:1px solid #333; color:white; border-radius:5px;">
+                </div>
+                <div class="form-group" style="margin-top:10px;">
+                    <label>Descripción</label>
+                    <textarea name="page_desc" rows="3" required 
+                              style="width:100%; padding:10px; background:#111; border:1px solid #333; color:white; border-radius:5px;">{{ content.description }}</textarea>
+                </div>
+
+                <hr style="border-color:#333; margin: 20px 0;">
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h4 style="color:var(--dorado); margin:0;">Tarjetas de Servicios</h4>
+                    <button type="button" onclick="addServiceRow()" class="action-btn-small secondary" style="font-size:0.8rem;">
+                        + Agregar Servicio
+                    </button>
+                </div>
+
+                <div id="servicesContainer" style="max-height: 400px; overflow-y: auto; padding-right:5px;">
+                    {% for service in content.services %}
+                    <div class="service-row" style="display:flex; gap:10px; margin-bottom:15px; align-items:start; background:#1a1a1a; padding:15px; border-radius:6px; border:1px solid #333;">
+                        
+                        <div style="flex-grow:1;">
+                            <input type="text" name="service_title[]" value="{{ service.title }}" placeholder="Título (Ej: Upgrades)" 
+                                   style="width:100%; padding:8px; background:#000; border:1px solid #333; color:white; margin-bottom:5px;">
+                            
+                            <textarea name="service_desc[]" placeholder="Descripción" rows="2"
+                                   style="width:100%; padding:8px; background:#000; border:1px solid #333; color:#aaa; margin-bottom:5px;">{{ service.desc }}</textarea>
+                            
+                            <div class="image-upload-wrapper" style="display:flex; align-items:center; gap:15px; margin-top:5px;">
+                                <div style="flex-grow:1;">
+                                    <input type="hidden" name="service_current_image[]" value="{{ service.image or '' }}" class="current-img-input">
+                                    <input type="file" name="service_image[]" accept="image/*" style="color:#aaa; font-size:0.8rem;" onchange="previewImage(this)">
+                                </div>
+                                
+                                <div class="preview-box" style="position:relative; width: 50px; height: 50px; border:1px solid #555; border-radius:4px; display: {{ 'block' if service.image else 'none' }};">
+                                    <img src="{{ url_for('static', filename='assets/img/' + service.image) if service.image else '' }}" class="img-preview" style="width:100%; height:100%; object-fit:cover;">
+                                    <button type="button" onclick="removeImage(this)" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border:none; border-radius:50%; width:16px; height:16px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="removeRow(this)" style="background:#ff6b6b; color:white; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer; margin-top:5px;">&times;</button>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="login-btn" style="width:100%; margin-top:20px;">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openEditPageModal() { document.getElementById('modalEditPage').style.display = 'flex'; }
+    function closeEditPageModal() { document.getElementById('modalEditPage').style.display = 'none'; }
+    window.onclick = function(event) { if (event.target == document.getElementById('modalEditPage')) closeEditPageModal(); }
+
+    // Agregar nueva tarjeta
+    function addServiceRow() {
+        const container = document.getElementById('servicesContainer');
+        const div = document.createElement('div');
+        div.className = 'service-row';
+        div.style.cssText = "display:flex; gap:10px; margin-bottom:15px; align-items:start; background:#1a1a1a; padding:15px; border-radius:6px; border:1px solid #333;";
+        
+        div.innerHTML = `
+            <div style="flex-grow:1;">
+                <input type="text" name="service_title[]" placeholder="Título Nuevo" 
+                       style="width:100%; padding:8px; background:#000; border:1px solid #333; color:white; margin-bottom:5px;">
+                
+                <textarea name="service_desc[]" placeholder="Descripción Nueva" rows="2"
+                       style="width:100%; padding:8px; background:#000; border:1px solid #333; color:#aaa; margin-bottom:5px;"></textarea>
+                
+                <div class="image-upload-wrapper" style="display:flex; align-items:center; gap:15px; margin-top:5px;">
+                    <div style="flex-grow:1;">
+                        <input type="hidden" name="service_current_image[]" value="" class="current-img-input">
+                        <input type="file" name="service_image[]" accept="image/*" style="color:#aaa; font-size:0.8rem;" onchange="previewImage(this)">
+                    </div>
+                    <div class="preview-box" style="position:relative; width: 50px; height: 50px; border:1px solid #555; border-radius:4px; display: none;">
+                        <img src="" class="img-preview" style="width:100%; height:100%; object-fit:cover;">
+                        <button type="button" onclick="removeImage(this)" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border:none; border-radius:50%; width:16px; height:16px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="removeRow(this)" style="background:#ff6b6b; color:white; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer; margin-top:5px;">&times;</button>
+        `;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Vista previa de imagen
+    function previewImage(input) {
+        const wrapper = input.closest('.image-upload-wrapper');
+        const previewBox = wrapper.querySelector('.preview-box');
+        const img = wrapper.querySelector('.img-preview');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                previewBox.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Eliminar imagen (Limpia input file y hidden)
+    function removeImage(btn) {
+        const wrapper = btn.closest('.image-upload-wrapper');
+        const fileInput = wrapper.querySelector('input[type="file"]');
+        const hiddenInput = wrapper.querySelector('.current-img-input');
+        const previewBox = wrapper.querySelector('.preview-box');
+
+        fileInput.value = ""; 
+        if(hiddenInput) hiddenInput.value = ""; 
+        previewBox.style.display = 'none';
+    }
+
+    function removeRow(btn) { btn.parentElement.remove(); }
+</script>
+{% endif %}
 
 {% endblock %}

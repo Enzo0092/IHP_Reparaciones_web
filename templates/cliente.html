@@ -1,0 +1,327 @@
+{% extends "layout.html" %}
+
+{% block title %}Mi Panel | IHP Reparaciones{% endblock %}
+
+{% block content %}
+<div id="clientePanel">
+  
+  <div class="cliente-header">
+    <div>
+      <h2><span>👤</span> Mi Espacio</h2>
+      <p>Hola, {{ session.get('user_name', 'Cliente') }}</p>
+      <div class="cliente-points">
+        <span>🏆 Puntos IHP: <strong>1,250</strong></span>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <a href="{{ url_for('logout') }}" id="logoutBtn" class="logout-btn">
+        <span>🚪</span> Salir
+      </a>
+    </div>
+  </div>
+
+  <div class="panel-tabs">
+    <button class="panel-tab active" onclick="openPanelTab(event, 'dashboard')">📊 Resumen</button>
+    <button class="panel-tab" onclick="openPanelTab(event, 'presupuestos')">📝 Presupuestos</button>
+    <button class="panel-tab" onclick="openPanelTab(event, 'garantias')">🛡️ Garantías</button>
+    <button class="panel-tab" onclick="openPanelTab(event, 'facturacion')">🧾 Facturas</button>
+    <button class="panel-tab" onclick="openPanelTab(event, 'ayuda')">❓ Ayuda</button>
+  </div>
+
+  <div id="dashboard" class="panel-content" style="display: block;">
+    
+    <div class="alert-box warning">
+      <strong>⚠️ Acción Requerida:</strong> Tienes 1 presupuesto pendiente de aprobación.
+      <button onclick="openPanelTab(event, 'presupuestos')" class="link-btn">Ver ahora</button>
+    </div>
+
+    <div class="dashboard-stats client-stats">
+      <div class="stat-card">
+        <div class="icon">📱</div>
+        <h3>Mis Equipos</h3>
+        <div class="number">2</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">🔧</div>
+        <h3>En Taller</h3>
+        <p>Reparación activa</p>
+        <div class="number text-gold">1</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">💳</div>
+        <h3>Saldo</h3>
+        <p>Pendiente de pago</p>
+        <div class="number">$0.00</div>
+      </div>
+    </div>
+
+    <div class="section-container">
+      <h3>📱 Mis Dispositivos Registrados</h3>
+      <div class="devices-grid">
+        <div class="device-card">
+          <div class="device-icon">📱</div>
+          <h4>iPhone 14 Pro</h4>
+          <p class="device-date">Agregado: 10/01/2026</p>
+          <span class="device-status repaired">Funcionando</span>
+        </div>
+        <div class="device-card">
+          <div class="device-icon">🎮</div>
+          <h4>PlayStation 5</h4>
+          <p class="device-date">Agregado: 15/02/2026</p>
+          <span class="device-status in-progress">En Reparación</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="presupuestos" class="panel-content">
+    <div class="section-container">
+      <h3>📝 Presupuestos Pendientes</h3>
+      <p style="color:#aaa; margin-bottom:20px;">Revisa el detalle y decide si procedemos con la reparación.</p>
+
+      <div class="budget-card">
+        <div class="budget-header">
+          <div>
+            <h4>Reparación de HDMI - PlayStation 5</h4>
+            <span class="date">Fecha: 06/02/2026</span>
+          </div>
+          <div class="budget-price">$85,000</div>
+        </div>
+        <div class="budget-body">
+          <p><strong>Diagnóstico:</strong> Puerto HDMI dañado por tirón de cable. Pistas de la placa base intactas.</p>
+          <p><strong>Incluye:</strong> Repuesto puerto HDMI 2.1 original + Mano de obra + Limpieza interna.</p>
+          <p><strong>Tiempo estimado:</strong> 48 horas.</p>
+        </div>
+        <div class="budget-actions">
+          <button class="btn-outline danger" onclick="confirmAction('rechazar')">❌ Rechazar</button>
+          <button class="btn-outline" onclick="window.print()">📥 Descargar PDF</button>
+          <button class="btn-solid success" onclick="confirmAction('aceptar')">✅ Aceptar y Reparar</button>
+        </div>
+      </div>
+
+      <h4 style="margin-top:40px; border-bottom:1px solid #333; padding-bottom:10px;">Historial</h4>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Dispositivo</th>
+              <th>Servicio</th>
+              <th>Monto</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>10/01/2026</td>
+              <td>iPhone 14 Pro</td>
+              <td>Cambio Pantalla</td>
+              <td>$120,000</td>
+              <td><span class="status-ok">Aceptado</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="garantias" class="panel-content">
+    <div class="section-container">
+      <h3>🛡️ Mis Garantías</h3>
+      
+      <div class="warranty-card active">
+        <div class="warranty-header">
+          <div class="warranty-icon">✅</div>
+          <div>
+            <h4>Cambio de Pantalla - iPhone 14 Pro</h4>
+            <p>Reparación #R-009</p>
+          </div>
+          <div class="warranty-days">
+            <strong>45</strong>
+            <span>Días restantes</span>
+          </div>
+        </div>
+        <div class="warranty-progress">
+          <div class="progress-bar" style="width: 50%;"></div>
+        </div>
+        <div class="warranty-footer">
+          <span>Vence: 20/04/2026</span>
+          <button class="text-btn" onclick="toggleTerms('terms1')">Ver términos</button>
+        </div>
+        <div id="terms1" class="warranty-terms" style="display:none;">
+          <p>Cubre defectos de fabricación del módulo (tacto fantasma, manchas). No cubre golpes, presión excesiva o contacto con líquidos.</p>
+        </div>
+      </div>
+
+      <div class="warranty-card expired">
+        <div class="warranty-header">
+          <div class="warranty-icon">🔒</div>
+          <div>
+            <h4>Limpieza Notebook HP</h4>
+            <p>Reparación #R-001</p>
+          </div>
+          <div class="warranty-days">
+            <strong>0</strong>
+            <span>Días restantes</span>
+          </div>
+        </div>
+        <div class="warranty-footer">
+          <span>Venció: 01/01/2026</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="facturacion" class="panel-content">
+    <div class="section-container">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>🧾 Comprobantes Fiscales</h3>
+        <button class="action-btn-small">💳 Pagar Saldo Online</button>
+      </div>
+
+      <div class="table-container" style="margin-top:20px;">
+        <table>
+          <thead>
+            <tr>
+              <th>N° Factura</th>
+              <th>Fecha</th>
+              <th>Concepto</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th>Descarga</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A-0001-000045</td>
+              <td>15/01/2026</td>
+              <td>Servicio Técnico iPhone</td>
+              <td>$120,000</td>
+              <td><span class="status-ok">Pagado</span></td>
+              <td><button class="btn-icon">📥 PDF</button></td>
+            </tr>
+            <tr>
+              <td>B-0001-000020</td>
+              <td>10/12/2025</td>
+              <td>Compra Accesorio</td>
+              <td>$15,000</td>
+              <td><span class="status-ok">Pagado</span></td>
+              <td><button class="btn-icon">📥 PDF</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="ayuda" class="panel-content">
+    <div class="section-container">
+      <h3>❓ Centro de Ayuda</h3>
+      
+      <div class="faq-container">
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            ¿Cuánto tiempo demora un diagnóstico?
+            <span class="arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Por lo general, los diagnósticos se realizan dentro de las 24 a 48 horas hábiles desde que ingresa el equipo.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            ¿Qué garantía tienen las reparaciones?
+            <span class="arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Ofrecemos 90 días de garantía sobre la mano de obra y el repuesto cambiado. No cubre daños físicos posteriores.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            ¿Debo hacer copia de seguridad?
+            <span class="arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Siempre recomendamos hacer un backup. Aunque no borramos datos intencionalmente, el riesgo en reparaciones electrónicas siempre existe.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="downloads-area" style="margin-top:30px;">
+        <h4>📥 Guías de Mantenimiento</h4>
+        <div class="download-link">
+          <span>📄 Cómo cuidar la batería de tu celular</span>
+          <button>Descargar</button>
+        </div>
+        <div class="download-link">
+          <span>📄 Limpieza básica de consolas</span>
+          <button>Descargar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Lógica de Pestañas
+  function openPanelTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    
+    tabcontent = document.getElementsByClassName("panel-content");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    
+    tablinks = document.getElementsByClassName("panel-tab");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    
+    document.getElementById(tabName).style.display = "block";
+    if (evt) {
+        evt.currentTarget.className += " active";
+    }
+  }
+
+  // Lógica de Presupuestos
+  function confirmAction(action) {
+    if(action === 'aceptar') {
+      if(confirm("¿Confirmas que aceptas el presupuesto? Comenzaremos a trabajar.")) {
+        alert("¡Presupuesto Aceptado! El estado de tu equipo cambiará pronto.");
+      }
+    } else {
+      if(confirm("¿Seguro que deseas rechazar? El equipo quedará listo para retiro sin reparar.")) {
+        alert("Presupuesto Rechazado.");
+      }
+    }
+  }
+
+  // Toggle Términos
+  function toggleTerms(id) {
+    var x = document.getElementById(id);
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
+  // Toggle FAQ
+  function toggleFaq(element) {
+    element.classList.toggle("active");
+    var panel = element.nextElementSibling;
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    }
+  }
+</script>
+{% endblock %}

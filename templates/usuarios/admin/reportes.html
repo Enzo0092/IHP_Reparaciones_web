@@ -1,0 +1,280 @@
+{% extends "layout.html" %}
+
+{% block title %}Reportes Financieros | IHP Admin{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div id="adminPanel" class="reports-panel">
+  
+  <div class="admin-header">
+    <div>
+      <h2><span>📊</span> Reportes Financieros</h2>
+      <p>Análisis de rentabilidad y flujo de caja</p>
+    </div>
+    
+    <form action="{{ url_for('admin_reportes') }}" method="POST" class="filter-form">
+      <div class="date-filters">
+        <select name="periodo" class="filter-select">
+          <option value="este_mes">Este Mes (Marzo)</option>
+          <option value="mes_pasado">Mes Pasado (Feb)</option>
+          <option value="anio">Este Año (2026)</option>
+        </select>
+        <button type="submit" class="action-btn-small">🔄 Filtrar</button>
+      </div>
+    </form>
+    
+    <a href="{{ url_for('admin_panel') }}" class="back-btn">
+      <span>⬅️</span> Volver
+    </a>
+  </div>
+
+  <div class="dashboard-stats">
+    
+    <div class="stat-card kpi-income">
+      <div class="icon">💰</div>
+      <h3>Ingresos Totales</h3>
+      <p class="trend positive">⬆ 15% vs mes anterior</p>
+      <div class="number text-success">$450,200</div>
+    </div>
+    
+    <div class="stat-card kpi-expense">
+      <div class="icon">💸</div>
+      <h3>Egresos / Gastos</h3>
+      <p class="trend negative">⬇ 5% vs mes anterior</p>
+      <div class="number text-danger">$120,500</div>
+    </div>
+    
+    <div class="stat-card kpi-profit">
+      <div class="icon">💎</div>
+      <h3>Beneficio Neto</h3>
+      <p class="trend stable">Rentabilidad: 73%</p>
+      <div class="number text-gold">$329,700</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="icon">🧾</div>
+      <h3>Ticket Promedio</h3>
+      <p>Por reparación</p>
+      <div class="number">$18,500</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    
+    <div class="chart-card wide">
+      <h3>📈 Ingresos vs. Egresos (Últimos 6 meses)</h3>
+      <div class="chart-container">
+        <canvas id="cashflowChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>📱 Rentabilidad por Dispositivo</h3>
+      <div class="chart-container">
+        <canvas id="deviceChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>💳 Métodos de Pago</h3>
+      <div class="chart-container">
+        <canvas id="paymentChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="recent-orders report-table-section">
+    <div class="table-header-flex">
+      <h3>📋 Detalle de Movimientos</h3>
+      <button onclick="exportTableToCSV('reporte_financiero_marzo.csv')" class="action-btn-small export-btn">
+        <span>📥</span> Exportar a Excel
+      </button>
+    </div>
+    
+    <div class="table-container">
+      <table id="tablaMovimientos">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Descripción / Concepto</th>
+            <th>Categoría</th>
+            <th>Método Pago</th>
+            <th>Tipo</th>
+            <th>Monto</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>18/03/2026</td>
+            <td>Reparación iPhone 14 (Pantalla)</td>
+            <td>Servicio Técnico</td>
+            <td>Transferencia</td>
+            <td><span class="type-income">⬇ Ingreso</span></td>
+            <td>$120,000</td>
+            <td><span class="status-completed">Cobrado</span></td>
+          </tr>
+          <tr>
+            <td>17/03/2026</td>
+            <td>Compra Repuestos Samsung</td>
+            <td>Insumos</td>
+            <td>Efectivo</td>
+            <td><span class="type-expense">⬆ Egreso</span></td>
+            <td class="text-danger">-$45,000</td>
+            <td><span class="status-completed">Pagado</span></td>
+          </tr>
+          <tr>
+            <td>16/03/2026</td>
+            <td>Venta Funda Silicona</td>
+            <td>Accesorios</td>
+            <td>Débito</td>
+            <td><span class="type-income">⬇ Ingreso</span></td>
+            <td>$15,000</td>
+            <td><span class="status-completed">Cobrado</span></td>
+          </tr>
+          <tr>
+            <td>15/03/2026</td>
+            <td>Pago Alquiler Local</td>
+            <td>Gastos Fijos</td>
+            <td>Transferencia</td>
+            <td><span class="type-expense">⬆ Egreso</span></td>
+            <td class="text-danger">-$150,000</td>
+            <td><span class="status-completed">Pagado</span></td>
+          </tr>
+          <tr>
+            <td>14/03/2026</td>
+            <td>Mantenimiento PS5</td>
+            <td>Servicio Técnico</td>
+            <td>Efectivo</td>
+            <td><span class="type-income">⬇ Ingreso</span></td>
+            <td>$45,000</td>
+            <td><span class="status-pending">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<script>
+  // Configuración común de colores
+  const colorGold = '#d4af37';
+  const colorRed = '#ff6b6b';
+  const colorGreen = '#2ecc71';
+  const colorBlue = '#4dabf7';
+  const colorGrey = '#333';
+  const colorText = '#eaeaea';
+
+  // 1. Gráfico de Flujo de Caja (Line Chart)
+  const ctxCash = document.getElementById('cashflowChart').getContext('2d');
+  new Chart(ctxCash, {
+    type: 'line',
+    data: {
+      labels: ['Oct', 'Nov', 'Dic', 'Ene', 'Feb', 'Mar'],
+      datasets: [
+        {
+          label: 'Ingresos',
+          data: [300000, 350000, 480000, 320000, 410000, 450200],
+          borderColor: colorGreen,
+          backgroundColor: 'rgba(46, 204, 113, 0.1)',
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Egresos',
+          data: [100000, 120000, 180000, 90000, 110000, 120500],
+          borderColor: colorRed,
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: colorText } }
+      },
+      scales: {
+        y: { ticks: { color: colorText }, grid: { color: colorGrey } },
+        x: { ticks: { color: colorText }, grid: { color: colorGrey } }
+      }
+    }
+  });
+
+  // 2. Rentabilidad por Dispositivo (Doughnut)
+  const ctxDevice = document.getElementById('deviceChart').getContext('2d');
+  new Chart(ctxDevice, {
+    type: 'doughnut',
+    data: {
+      labels: ['Celulares', 'Consolas', 'PCs/Notebooks', 'Accesorios'],
+      datasets: [{
+        data: [55, 20, 15, 10], // Porcentajes
+        backgroundColor: [
+          '#4dabf7', // Celulares (Azul)
+          '#9b59b6', // Consolas (Violeta)
+          '#e67e22', // PC (Naranja)
+          '#95a5a6'  // Accesorios (Gris)
+        ],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: colorText } }
+      }
+    }
+  });
+
+  // 3. Métodos de Pago (Bar Chart)
+  const ctxPayment = document.getElementById('paymentChart').getContext('2d');
+  new Chart(ctxPayment, {
+    type: 'bar',
+    data: {
+      labels: ['Efectivo', 'Transferencia', 'Tarjeta Crédito', 'Tarjeta Débito'],
+      datasets: [{
+        label: 'Transacciones',
+        data: [120, 85, 40, 60],
+        backgroundColor: [colorGreen, colorGold, colorRed, colorBlue],
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false } // Ocultar leyenda porque ya son colores distintos
+      },
+      scales: {
+        y: { ticks: { color: colorText }, grid: { color: colorGrey } },
+        x: { ticks: { color: colorText }, grid: { display: false } }
+      }
+    }
+  });
+
+  function exportTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("#tablaMovimientos tr");
+    
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (var j = 0; j < cols.length; j++) 
+            // Obtenemos el texto limpio (sin iconos ni espacios extra)
+            row.push('"' + cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").trim() + '"');
+        
+        csv.push(row.join(","));        
+    }
+
+    // Crear el archivo blob y descargar
+    var csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+    var downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+  }
+</script>
+{% endblock %}
